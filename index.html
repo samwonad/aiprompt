@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PNG Prompt Builder — Professional</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-2: #1c2128;
+  --surface-3: #21262d;
+  --border: #30363d;
+  --border-2: #3d4449;
+  --text: #e6edf3;
+  --text-2: #8b949e;
+  --text-3: #6e7681;
+  --primary: #2f81f7;
+  --primary-muted: rgba(47,129,247,.15);
+  --success: #3fb950;
+  --success-muted: rgba(63,185,80,.12);
+  --warning: #d29922;
+  --warning-muted: rgba(210,153,34,.12);
+  --danger: #f85149;
+  --danger-muted: rgba(248,81,73,.12);
+  --accent: #a371f7;
+  --accent-muted: rgba(163,113,247,.12);
+  --r: 6px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+/* HEADER */
+.hdr { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; height: 52px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.hdr-logo { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
+.hdr-logo span { color: var(--primary); }
+.hdr-badge { font-size: 10px; font-weight: 600; background: var(--accent-muted); color: var(--accent); border: 1px solid var(--accent); border-radius: 20px; padding: 1px 7px; }
+.hdr-spacer { flex: 1; }
+.hdr-link { font-size: 12px; color: var(--text-3); text-decoration: none; padding: 4px 8px; border-radius: var(--r); transition: background .15s; }
+.hdr-link:hover { background: var(--surface-3); color: var(--text-2); }
+
+/* LAYOUT */
+.main { display: grid; grid-template-columns: 380px 1fr; flex: 1; min-height: 0; overflow: hidden; }
+.panel-l { background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; }
+.panel-r { background: var(--bg); overflow-y: auto; display: flex; flex-direction: column; }
+
+/* SECTION */
+.sec { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.sec:last-child { border-bottom: none; }
+.sec-title { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.sec-title .badge { font-size: 9px; font-weight: 600; background: var(--primary-muted); color: var(--primary); padding: 1px 5px; border-radius: 20px; text-transform: none; letter-spacing: 0; }
+
+/* TYPE TABS */
+.type-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.type-tab { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r); padding: 8px 10px; cursor: pointer; font-size: 12px; color: var(--text-2); transition: all .15s; text-align: center; }
+.type-tab:hover { border-color: var(--border-2); color: var(--text); }
+.type-tab.active { background: var(--primary-muted); border-color: var(--primary); color: var(--primary); font-weight: 600; }
+
+/* FORM */
+.field { margin-bottom: 10px; }
+.field-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.field-label { font-size: 11px; font-weight: 600; color: var(--text-2); }
+.field-hint { font-size: 10px; color: var(--text-3); margin-left: auto; }
+.field input[type=text], .field textarea {
+  width: 100%; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r);
+  color: var(--text); font-size: 12px; padding: 7px 10px; outline: none; resize: none;
+  transition: border-color .15s;
+  font-family: inherit;
+}
+.field input[type=text]:focus, .field textarea:focus { border-color: var(--primary); }
+.field textarea { min-height: 54px; line-height: 1.5; }
+
+/* CHIPS */
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip { font-size: 11px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 3px 9px; cursor: pointer; color: var(--text-2); transition: all .15s; white-space: nowrap; }
+.chip:hover { border-color: var(--border-2); color: var(--text); }
+.chip.on { background: var(--primary-muted); border-color: var(--primary); color: var(--primary); font-weight: 600; }
+.chip.on.neg { background: var(--danger-muted); border-color: var(--danger); color: var(--danger); }
+.chip-group-label { font-size: 10px; color: var(--text-3); width: 100%; padding-top: 4px; }
+
+/* CHECKBOXES */
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.chk-label { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-2); cursor: pointer; padding: 4px 6px; border-radius: 4px; transition: background .15s; }
+.chk-label:hover { background: var(--surface-3); color: var(--text); }
+.chk-label input { accent-color: var(--primary); width: 13px; height: 13px; cursor: pointer; }
+
+/* RATIO */
+.ratio-row { display: flex; gap: 6px; }
+.ratio-btn { flex: 1; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r); padding: 6px 4px; cursor: pointer; font-size: 11px; color: var(--text-2); transition: all .15s; }
+.ratio-btn:hover { border-color: var(--border-2); color: var(--text); }
+.ratio-btn input { display: none; }
+.ratio-btn.active { background: var(--primary-muted); border-color: var(--primary); color: var(--primary); font-weight: 600; }
+
+/* CONFLICT WARNING */
+.conflict { background: var(--warning-muted); border: 1px solid var(--warning); border-radius: var(--r); padding: 8px 10px; font-size: 11px; color: var(--warning); display: none; }
+.conflict.show { display: flex; align-items: center; gap: 6px; }
+
+/* QUALITY SCORE */
+.qs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.qs-item { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r); padding: 8px 10px; }
+.qs-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.qs-name { font-size: 10px; color: var(--text-3); }
+.qs-val { font-size: 12px; font-weight: 700; color: var(--text); }
+.qs-bar-bg { background: var(--surface-3); border-radius: 2px; height: 3px; }
+.qs-bar { height: 3px; border-radius: 2px; background: var(--primary); transition: width .3s ease; }
+.qs-total { background: linear-gradient(135deg, var(--primary-muted), var(--accent-muted)); border: 1px solid var(--primary); border-radius: var(--r); padding: 10px; margin-top: 8px; display: flex; align-items: center; gap: 10px; }
+.qs-total-num { font-size: 24px; font-weight: 800; color: var(--primary); }
+.qs-total-label { font-size: 11px; color: var(--text-2); }
+.qs-total-grade { font-size: 13px; font-weight: 700; color: var(--accent); }
+.qs-tips { margin-top: 8px; }
+.qs-tip { font-size: 10px; color: var(--text-3); padding: 3px 0; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 5px; }
+.qs-tip:first-child { border-top: none; }
+.qs-tip .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--warning); flex-shrink: 0; margin-top: 4px; }
+
+/* RIGHT PANEL */
+.r-top { padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.mode-tabs, .fmt-tabs { display: flex; gap: 4px; }
+.mode-btn, .fmt-btn { font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: var(--r); border: 1px solid transparent; cursor: pointer; transition: all .15s; color: var(--text-2); background: transparent; }
+.mode-btn:hover, .fmt-btn:hover { background: var(--surface-3); color: var(--text); }
+.mode-btn.active { background: var(--primary-muted); border-color: var(--primary); color: var(--primary); }
+.fmt-btn.active { background: var(--accent-muted); border-color: var(--accent); color: var(--accent); }
+.r-top-sep { width: 1px; height: 20px; background: var(--border); }
+.r-top-spacer { flex: 1; }
+.r-counter { font-size: 10px; color: var(--text-3); }
+
+.r-body { flex: 1; padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+/* PROMPT OUTPUT */
+.prompt-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 12px; line-height: 1.7; min-height: 180px; white-space: pre-wrap; word-break: break-word; }
+.prompt-box .hl-section { color: var(--text-3); font-weight: 600; }
+.prompt-box .hl-key { color: var(--primary); font-weight: 700; }
+.prompt-box .hl-tech { color: var(--success); }
+.prompt-box .hl-neg { color: var(--danger); }
+.prompt-box .hl-chip { color: var(--accent); }
+.prompt-box .hl-plain { color: var(--text); }
+.prompt-box .hl-comment { color: var(--text-3); font-style: italic; }
+.prompt-box.loading { color: var(--text-3); font-style: italic; }
+
+/* ACTIONS */
+.action-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.btn { font-size: 12px; font-weight: 600; padding: 7px 14px; border-radius: var(--r); border: 1px solid; cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: #388bfd; }
+.btn-ghost { background: transparent; border-color: var(--border); color: var(--text-2); }
+.btn-ghost:hover:not(:disabled) { border-color: var(--border-2); color: var(--text); background: var(--surface-3); }
+.btn-success { background: var(--success-muted); border-color: var(--success); color: var(--success); }
+.btn-success:hover:not(:disabled) { background: rgba(63,185,80,.2); }
+.btn-spacer { flex: 1; }
+
+/* VARIATIONS */
+.var-tabs { display: flex; gap: 4px; margin-bottom: 10px; }
+.var-btn { font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; color: var(--text-3); background: transparent; transition: all .15s; }
+.var-btn:hover { color: var(--text-2); border-color: var(--border-2); }
+.var-btn.active { background: var(--accent-muted); border-color: var(--accent); color: var(--accent); }
+
+/* PRESETS */
+.preset-list { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.preset-item { font-size: 11px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; cursor: pointer; color: var(--text-2); transition: all .15s; display: flex; align-items: center; gap: 5px; }
+.preset-item:hover { border-color: var(--border-2); color: var(--text); }
+.preset-item .del { color: var(--text-3); font-size: 10px; margin-left: 2px; }
+.preset-item .del:hover { color: var(--danger); }
+.preset-item.builtin { border-style: dashed; }
+
+/* FOOTER / HISTORY */
+.ftr { background: var(--surface); border-top: 1px solid var(--border); padding: 0 20px; height: 42px; display: flex; align-items: center; gap: 8px; flex-shrink: 0; overflow: hidden; }
+.ftr-label { font-size: 10px; font-weight: 600; color: var(--text-3); white-space: nowrap; }
+.ftr-hist { display: flex; gap: 6px; overflow-x: auto; flex: 1; scrollbar-width: none; }
+.ftr-hist::-webkit-scrollbar { display: none; }
+.hist-item { font-size: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; cursor: pointer; color: var(--text-3); white-space: nowrap; transition: all .15s; flex-shrink: 0; max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
+.hist-item:hover { border-color: var(--border-2); color: var(--text-2); }
+.ftr-clear { font-size: 10px; color: var(--text-3); cursor: pointer; padding: 2px 6px; border-radius: 4px; border: none; background: none; }
+.ftr-clear:hover { color: var(--danger); }
+
+/* TOAST */
+.toast { position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--surface-3); border: 1px solid var(--border-2); color: var(--text); font-size: 12px; padding: 8px 16px; border-radius: 20px; opacity: 0; transition: all .25s; pointer-events: none; z-index: 100; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 200; }
+.modal-overlay.show { display: flex; }
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; width: 360px; }
+.modal-title { font-size: 14px; font-weight: 700; margin-bottom: 14px; }
+.modal-input { width: 100%; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); font-size: 12px; padding: 8px 10px; outline: none; margin-bottom: 12px; }
+.modal-input:focus { border-color: var(--primary); }
+.modal-row { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+@media (max-width: 900px) {
+  .main { grid-template-columns: 1fr; }
+  .panel-l { max-height: 60vh; }
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-logo">PNG Prompt <span>Builder</span></div>
+  <div class="hdr-badge">PRO</div>
+  <div class="hdr-spacer"></div>
+  <span class="hdr-link" id="btnSavePreset">프리셋 저장</span>
+  <span class="hdr-link" id="btnReset">초기화</span>
+</header>
+
+<div class="main">
+  <!-- LEFT PANEL -->
+  <aside class="panel-l">
+
+    <!-- TYPE -->
+    <div class="sec">
+      <div class="sec-title">디자인 유형</div>
+      <div class="type-tabs" id="typeTabs">
+        <div class="type-tab active" data-type="인쇄용 소스 디자인">인쇄용 소스</div>
+        <div class="type-tab" data-type="캐릭터 디자인">캐릭터</div>
+        <div class="type-tab" data-type="아이콘 디자인">아이콘</div>
+        <div class="type-tab" data-type="오브젝트 디자인">오브젝트</div>
+      </div>
+    </div>
+
+    <!-- PRESETS -->
+    <div class="sec">
+      <div class="sec-title">프리셋 <span class="badge" id="presetCount">0</span></div>
+      <div class="preset-list" id="presetList"></div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap" id="builtinPresets"></div>
+    </div>
+
+    <!-- FIELDS -->
+    <div class="sec">
+      <div class="sec-title">입력 필드</div>
+      <div class="field">
+        <div class="field-row"><span class="field-label">주제 *</span><span class="field-hint">무엇을 그릴까요?</span></div>
+        <textarea id="subject" rows="2" placeholder="예: 딸기 체험농장 귀여운 마스코트 캐릭터"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-row"><span class="field-label">아트 스타일</span></div>
+        <textarea id="style" rows="2" placeholder="예: 말랑한 소프트 3D 광고 캐릭터, 따뜻하고 친근한 느낌"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-row"><span class="field-label">색감</span></div>
+        <input type="text" id="colors" placeholder="예: 딸기 레드, 잎사귀 그린, 크림톤">
+      </div>
+      <div class="field">
+        <div class="field-row"><span class="field-label">구도 / 포즈</span></div>
+        <input type="text" id="composition" placeholder="예: 정면, 손을 흔드는 포즈, 중앙 배치">
+      </div>
+      <div class="field">
+        <div class="field-row"><span class="field-label">분위기 / 무드</span></div>
+        <input type="text" id="mood" placeholder="예: 밝고 경쾌한, 어린이 친화적, 상업적">
+      </div>
+      <div class="field">
+        <div class="field-row"><span class="field-label">추가 요청</span></div>
+        <textarea id="extra" rows="2" placeholder="예: 가방을 들고 있음, 로고 공간 좌측 하단 여백"></textarea>
+      </div>
+    </div>
+
+    <!-- TECH OPTIONS -->
+    <div class="sec">
+      <div class="sec-title">기술 요건</div>
+      <div class="checks">
+        <label class="chk-label"><input type="checkbox" id="transparent" checked> 투명 배경</label>
+        <label class="chk-label"><input type="checkbox" id="shadowless" checked> 그림자 없음</label>
+        <label class="chk-label"><input type="checkbox" id="noBranding" checked> 텍스트/워터마크 없음</label>
+        <label class="chk-label"><input type="checkbox" id="highres" checked> 고해상도</label>
+        <label class="chk-label"><input type="checkbox" id="clean" checked> 선명한 외곽선</label>
+        <label class="chk-label"><input type="checkbox" id="safeCrop" checked> 안전 여백</label>
+        <label class="chk-label"><input type="checkbox" id="original" checked> 오리지널 IP</label>
+        <label class="chk-label"><input type="checkbox" id="flatVector"> 플랫 벡터</label>
+        <label class="chk-label"><input type="checkbox" id="lineArt"> 라인 아트</label>
+        <label class="chk-label"><input type="checkbox" id="infographic"> 인포그래픽</label>
+        <label class="chk-label"><input type="checkbox" id="simpleColor"> 단순 채색</label>
+        <label class="chk-label"><input type="checkbox" id="removeSkyBg"> 배경 경치 없음</label>
+        <label class="chk-label"><input type="checkbox" id="publicPromo"> 공공기관 스타일</label>
+      </div>
+    </div>
+
+    <!-- ASPECT RATIO -->
+    <div class="sec">
+      <div class="sec-title">출력 비율</div>
+      <div class="ratio-row">
+        <label class="ratio-btn active" id="lbl-ratio11"><input type="radio" name="ratio" id="ratio11" checked> 1:1</label>
+        <label class="ratio-btn" id="lbl-ratio43"><input type="radio" name="ratio" id="ratio43"> 4:3</label>
+        <label class="ratio-btn" id="lbl-ratio34"><input type="radio" name="ratio" id="ratio34"> 3:4</label>
+        <label class="ratio-btn" id="lbl-ratio169"><input type="radio" name="ratio" id="ratio169"> 16:9</label>
+        <label class="ratio-btn" id="lbl-ratio916"><input type="radio" name="ratio" id="ratio916"> 9:16</label>
+      </div>
+    </div>
+
+    <!-- CHIPS -->
+    <div class="sec">
+      <div class="sec-title">스타일 키워드</div>
+      <div class="chips" id="chips">
+        <div class="chip-group-label">구성 / 뷰</div>
+        <span class="chip" data-k="centered composition">중앙 배치</span>
+        <span class="chip" data-k="front-facing view">정면 구도</span>
+        <span class="chip" data-k="generous padding">여백 넉넉하게</span>
+        <span class="chip" data-k="elements visually separated">각 요소 분리</span>
+        <span class="chip" data-k="legible at small sizes">작은 크기 가독성</span>
+        <div class="chip-group-label">스타일</div>
+        <span class="chip" data-k="soft 3D rendered">3D 형태</span>
+        <span class="chip" data-k="flat vector style">평면 벡터</span>
+        <span class="chip" data-k="thick bold outlines">두꺼운 라인</span>
+        <span class="chip" data-k="rounded shapes">둥근 형태</span>
+        <span class="chip" data-k="easy to recolor">색 변경 용이</span>
+        <span class="chip" data-k="simple shapes easy to vectorize">벡터화 쉬운 형태</span>
+        <div class="chip-group-label">분위기</div>
+        <span class="chip" data-k="cute and friendly">귀엽고 친근하게</span>
+        <span class="chip" data-k="premium and clean">고급스럽고 깔끔하게</span>
+        <span class="chip" data-k="bright and cheerful">밝고 경쾌하게</span>
+        <span class="chip" data-k="commercial design aesthetic">상업 디자인 느낌</span>
+        <span class="chip" data-k="brand mascot style">브랜드 마스코트</span>
+        <span class="chip" data-k="three-dimensional depth">입체감 있게</span>
+        <div class="chip-group-label">기술 (제거)</div>
+        <span class="chip neg" data-k="no background elements">배경 없음</span>
+        <span class="chip neg" data-k="no ground shadow">바닥 그림자 없음</span>
+        <span class="chip neg" data-k="no watermark">워터마크 없음</span>
+        <span class="chip neg" data-k="no logo">로고 없음</span>
+        <span class="chip neg" data-k="copyright-safe original">저작권 안전</span>
+        <span class="chip neg" data-k="no excessive decoration">과도한 장식 없음</span>
+      </div>
+    </div>
+
+    <!-- QUALITY SCORE -->
+    <div class="sec">
+      <div class="sec-title">품질 점수 <span class="badge">실시간</span></div>
+      <div class="qs-grid">
+        <div class="qs-item"><div class="qs-top"><span class="qs-name">주제</span><span class="qs-val" id="qs-sub">0</span></div><div class="qs-bar-bg"><div class="qs-bar" id="qsb-sub" style="width:0%"></div></div></div>
+        <div class="qs-item"><div class="qs-top"><span class="qs-name">스타일</span><span class="qs-val" id="qs-sty">0</span></div><div class="qs-bar-bg"><div class="qs-bar" id="qsb-sty" style="width:0%"></div></div></div>
+        <div class="qs-item"><div class="qs-top"><span class="qs-name">기술요건</span><span class="qs-val" id="qs-tch">0</span></div><div class="qs-bar-bg"><div class="qs-bar" id="qsb-tch" style="width:0%"></div></div></div>
+        <div class="qs-item"><div class="qs-top"><span class="qs-name">색감</span><span class="qs-val" id="qs-col">0</span></div><div class="qs-bar-bg"><div class="qs-bar" id="qsb-col" style="width:0%"></div></div></div>
+        <div class="qs-item"><div class="qs-top"><span class="qs-name">구도</span><span class="qs-val" id="qs-cmp">0</span></div><div class="qs-bar-bg"><div class="qs-bar" id="qsb-cmp" style="width:0%"></div></div></div>
+        <div class="qs-item"><div class="qs-top"><span class="qs-name">무드</span><span class="qs-val" id="qs-mod">0</span></div><div class="qs-bar-bg"><div class="qs-bar" id="qsb-mod" style="width:0%"></div></div></div>
+      </div>
+      <div class="qs-total">
+        <div>
+          <div class="qs-total-num" id="qs-total">0</div>
+          <div class="qs-total-label">/ 100</div>
+        </div>
+        <div>
+          <div class="qs-total-grade" id="qs-grade">입력 대기중</div>
+          <div class="qs-total-label" id="qs-note">필드를 채워주세요</div>
+        </div>
+      </div>
+      <div class="qs-tips" id="qsTips"></div>
+    </div>
+
+    <!-- CONFLICT WARNING -->
+    <div class="sec" id="conflictSec" style="display:none">
+      <div class="conflict show" id="styleWarning">
+        ⚠ 플랫 벡터와 3D 형태가 동시에 선택되어 있습니다. 하나만 유지하면 결과물이 더 일관됩니다.
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- RIGHT PANEL -->
+  <main class="panel-r">
+    <div class="r-top">
+      <div class="mode-tabs">
+        <button class="mode-btn active" data-mode="standard">Standard</button>
+        <button class="mode-btn" data-mode="professional">Professional</button>
+        <button class="mode-btn" data-mode="expert">Expert</button>
+      </div>
+      <div class="r-top-sep"></div>
+      <div class="fmt-tabs">
+        <button class="fmt-btn active" data-fmt="gpt">GPT Image</button>
+        <button class="fmt-btn" data-fmt="mj">Midjourney</button>
+        <button class="fmt-btn" data-fmt="sd">Stable Diffusion</button>
+        <button class="fmt-btn" data-fmt="raw">Raw / Debug</button>
+      </div>
+      <div class="r-top-spacer"></div>
+      <div class="r-counter" id="counter">0 chars · 0 tokens</div>
+    </div>
+
+    <div class="r-body">
+
+      <!-- MAIN PROMPT -->
+      <div>
+        <div class="sec-title" style="margin-bottom:8px">생성된 프롬프트</div>
+        <div class="prompt-box" id="promptBox">프롬프트를 생성하려면 주제를 입력하고 "프롬프트 생성" 버튼을 클릭하세요.</div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="action-row">
+        <button class="btn btn-primary" id="btnGenerate">▶ 프롬프트 생성</button>
+        <button class="btn btn-success" id="btnCopy">복사</button>
+        <button class="btn btn-ghost" id="btnDownload">TXT 저장</button>
+        <div class="btn-spacer"></div>
+        <button class="btn btn-ghost" id="btnCopyAll">4종 모두 복사</button>
+      </div>
+
+      <!-- VARIATIONS -->
+      <div>
+        <div class="sec-title" style="margin-bottom:8px">변형 프롬프트 <span class="badge" style="font-size:9px;background:var(--accent-muted);color:var(--accent);border:1px solid var(--accent);padding:1px 5px;border-radius:20px">3가지</span></div>
+        <div class="var-tabs">
+          <button class="var-btn active" data-var="0">주제 강조</button>
+          <button class="var-btn" data-var="1">스타일 강조</button>
+          <button class="var-btn" data-var="2">기술 강조</button>
+        </div>
+        <div class="prompt-box" id="varBox" style="min-height:100px;font-size:11px">변형 프롬프트는 생성 후 표시됩니다.</div>
+      </div>
+
+      <!-- 4 FORMAT SUMMARY -->
+      <div id="allFormats" style="display:none">
+        <div class="sec-title" style="margin-bottom:8px">전체 포맷 미리보기</div>
+        <div id="allFormatsContent"></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<footer class="ftr">
+  <div class="ftr-label">히스토리</div>
+  <div class="ftr-hist" id="histBar"></div>
+  <button class="ftr-clear" id="btnClearHist">전체 삭제</button>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- PRESET SAVE MODAL -->
+<div class="modal-overlay" id="presetModal">
+  <div class="modal">
+    <div class="modal-title">프리셋 저장</div>
+    <input class="modal-input" id="presetNameInput" placeholder="프리셋 이름을 입력하세요" maxlength="30">
+    <div class="modal-row">
+      <button class="btn btn-ghost" id="btnModalCancel">취소</button>
+      <button class="btn btn-primary" id="btnModalSave">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// DICTIONARIES
+// ─────────────────────────────────────────────
+const TYPE_EN = {
+  "인쇄용 소스 디자인": "print-ready graphic design asset",
+  "캐릭터 디자인":      "mascot character illustration",
+  "아이콘 디자인":      "icon set illustration",
+  "오브젝트 디자인":    "decorative graphic object",
+};
+
+const OPTION_EN = {
+  transparent:  "fully transparent background with clean alpha channel — no color fill, no gradient, no vignette",
+  shadowless:   "absolutely no drop shadow, no cast shadow, no ambient occlusion, no ground reflection, no inner glow whatsoever",
+  noBranding:   "no embedded text, no letters, no numbers, no watermarks, no logos, no signatures, no copyright symbols",
+  highres:      "high resolution output, print-ready quality, sharp fine details",
+  clean:        "crisp clean edges, well-defined outlines, suitable for clean cutout and compositing",
+  safeCrop:     "entire subject fully visible within frame, generous safe margins on all sides, nothing cropped",
+  original:     "completely original design, not based on any existing franchise, copyright-safe, no IP violation",
+  flatVector:   "flat 2D vector illustration style, no gradients, no depth shading",
+  lineArt:      "clean precise line art with uniform stroke weight, crisp outlines",
+  infographic:  "infographic-style layout, clear visual hierarchy",
+  simpleColor:  "simple flat coloring with limited palette, minimal color complexity",
+  removeSkyBg:  "no sky, no landscape, no background scenery, no environment context",
+  publicPromo:  "clean institutional public-friendly style appropriate for official promotion",
+};
+
+const RATIO_EN = {
+  ratio11:  "square format 1:1 aspect ratio",
+  ratio43:  "landscape 4:3 aspect ratio",
+  ratio34:  "portrait 3:4 aspect ratio",
+  ratio169: "wide landscape 16:9 aspect ratio",
+  ratio916: "tall portrait 9:16 aspect ratio",
+};
+
+const MJ_RATIO = {
+  ratio11: "--ar 1:1", ratio43: "--ar 4:3", ratio34: "--ar 3:4",
+  ratio169: "--ar 16:9", ratio916: "--ar 9:16",
+};
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+const st = {
+  type: "인쇄용 소스 디자인",
+  mode: "standard",
+  fmt: "gpt",
+  varIdx: 0,
+  prompts: { gpt: "", mj: "", sd: "", raw: "", vars: ["", "", ""] },
+  history: [],
+  presets: [],
+  cache: {},
+};
+
+function $(id) { return document.getElementById(id); }
+
+// ─────────────────────────────────────────────
+// TRANSLATION
+// ─────────────────────────────────────────────
+async function translateKoToEn(text) {
+  if (!text || !text.trim()) return "";
+  const key = text.trim();
+  if (st.cache[key]) return st.cache[key];
+  try {
+    const url = "https://translate.googleapis.com/translate_a/single"
+      + "?client=gtx&sl=ko&tl=en&dt=t&q=" + encodeURIComponent(key);
+    const res = await fetch(url);
+    const data = await res.json();
+    const result = data[0].map(item => item[0]).join("").trim();
+    st.cache[key] = result;
+    return result;
+  } catch(e) {
+    return key;
+  }
+}
+
+// ─────────────────────────────────────────────
+// PROMPT BUILDERS
+// ─────────────────────────────────────────────
+function buildGPT(en, mode) {
+  const typeEN = TYPE_EN[st.type] || st.type;
+  const tech = buildTechLines();
+  const chips = buildChipLines();
+  const ratio = buildRatioLine();
+
+  if (mode === "standard") {
+    let p = `Create a ${typeEN} illustration.\n\n`;
+    if (en.subject)     p += `The main subject is: ${en.subject}.\n`;
+    if (en.style)       p += `Art style: ${en.style}.\n`;
+    if (en.colors)      p += `Color palette: ${en.colors}.\n`;
+    if (en.composition) p += `Composition and pose: ${en.composition}.\n`;
+    if (en.mood)        p += `Overall mood and atmosphere: ${en.mood}.\n`;
+    if (en.extra)       p += `Additional requirements: ${en.extra}.\n`;
+    if (tech.length) {
+      p += `\nTechnical requirements: ${tech.join(", ")}.`;
+    }
+    if (chips.length) {
+      p += `\nStyle keywords: ${chips.join(", ")}.`;
+    }
+    if (ratio) p += `\nOutput: ${ratio}.`;
+    p += "\n\nDeliver as a clean, professional, print-ready commercial illustration asset.";
+    return p.trim();
+  }
+
+  if (mode === "professional") {
+    let p = `[TASK] Create a ${typeEN} illustration.\n\n`;
+    if (en.subject)     p += `[SUBJECT] ${en.subject}\n`;
+    if (en.style)       p += `[ART STYLE] ${en.style}\n`;
+    if (en.colors)      p += `[COLOR PALETTE] ${en.colors}\n`;
+    if (en.composition) p += `[COMPOSITION] ${en.composition}\n`;
+    if (en.mood)        p += `[MOOD] ${en.mood}\n`;
+    if (en.extra)       p += `[ADDITIONAL] ${en.extra}\n`;
+    if (tech.length) {
+      p += `\n[TECHNICAL REQUIREMENTS]\n`;
+      tech.forEach(t => p += `• ${t}\n`);
+    }
+    if (chips.length) {
+      p += `\n[STYLE KEYWORDS]\n${chips.join(", ")}\n`;
+    }
+    if (ratio) p += `\n[OUTPUT FORMAT] ${ratio}\n`;
+    p += "\n[DELIVERABLE] Clean, professional, print-ready commercial illustration asset.";
+    return p.trim();
+  }
+
+  if (mode === "expert") {
+    const sep = "━".repeat(50);
+    let p = `${sep}\nTASK\n${sep}\nCreate a ${typeEN} illustration for commercial print use.\n\n`;
+    p += `${sep}\nDESIGN SPECIFICATIONS\n${sep}\n`;
+    if (en.subject)     p += `SUBJECT:      ${en.subject}\n`;
+    if (en.style)       p += `ART STYLE:    ${en.style}\n`;
+    if (en.colors)      p += `COLOR:        ${en.colors}\n`;
+    if (en.composition) p += `COMPOSITION:  ${en.composition}\n`;
+    if (en.mood)        p += `MOOD:         ${en.mood}\n`;
+    if (en.extra)       p += `EXTRA:        ${en.extra}\n`;
+    if (tech.length) {
+      p += `\n${sep}\nTECHNICAL REQUIREMENTS\n${sep}\n`;
+      tech.forEach(t => p += `✓ ${t}\n`);
+    }
+    if (chips.length) {
+      p += `\n${sep}\nSTYLE KEYWORDS\n${sep}\n`;
+      p += chips.join(" · ") + "\n";
+    }
+    if (ratio) p += `\n${sep}\nOUTPUT\n${sep}\n${ratio}\n`;
+    p += `\n${sep}\nDELIVERABLE\n${sep}\nHigh-fidelity, production-ready, commercially safe illustration asset.`;
+    return p.trim();
+  }
+  return "";
+}
+
+function buildMJ(en) {
+  const typeEN = TYPE_EN[st.type] || st.type;
+  const parts = [];
+  if (en.subject) parts.push(en.subject);
+  if (en.style) parts.push(en.style);
+  if (en.colors) parts.push(en.colors);
+  if (en.composition) parts.push(en.composition);
+  if (en.mood) parts.push(en.mood);
+  if (en.extra) parts.push(en.extra);
+  parts.push(typeEN);
+
+  const negs = [];
+  if ($("transparent") && $("transparent").checked) negs.push("background");
+  if ($("shadowless") && $("shadowless").checked) negs.push("shadow", "drop shadow", "cast shadow");
+  if ($("noBranding") && $("noBranding").checked) negs.push("text", "watermark", "logo");
+  negs.push("ugly", "deformed", "blurry", "low quality");
+
+  const ratio = document.querySelector('input[name="ratio"]:checked');
+  const arFlag = ratio ? (MJ_RATIO[ratio.id] || "--ar 1:1") : "--ar 1:1";
+
+  const chips = buildChipLines().slice(0, 8);
+  if (chips.length) parts.push(...chips);
+
+  return `${parts.join(", ")} ${arFlag} --v 6.1 --style raw --q 2${negs.length ? " --no " + negs.join(", ") : ""}`;
+}
+
+function buildSD(en) {
+  const typeEN = TYPE_EN[st.type] || st.type;
+  const pos = [];
+  if (en.subject) pos.push(en.subject);
+  if (en.style) pos.push(en.style);
+  if (en.colors) pos.push(en.colors);
+  if (en.composition) pos.push(en.composition);
+  if (en.mood) pos.push(en.mood);
+  if (en.extra) pos.push(en.extra);
+  pos.push(typeEN);
+  pos.push("masterpiece", "best quality", "ultra-detailed", "8k");
+
+  const tech = buildTechLines();
+  pos.push(...tech.slice(0, 6));
+
+  const chips = buildChipLines();
+  pos.push(...chips.slice(0, 6));
+
+  const neg = ["blurry", "low quality", "worst quality", "jpeg artifacts", "distorted"];
+  if ($("transparent") && $("transparent").checked) neg.push("background", "colored background");
+  if ($("shadowless") && $("shadowless").checked) neg.push("shadow", "drop shadow");
+  if ($("noBranding") && $("noBranding").checked) neg.push("text", "watermark", "logo", "signature");
+  neg.push("extra limbs", "deformed", "ugly", "duplicate");
+
+  return `POSITIVE:\n${pos.join(", ")}\n\nNEGATIVE:\n${neg.join(", ")}`;
+}
+
+function buildRaw(en) {
+  const tech = buildTechLines();
+  const chips = buildChipLines();
+  const ratio = document.querySelector('input[name="ratio"]:checked');
+  const lines = [
+    `# PNG Prompt Builder — Raw Debug Output`,
+    `# Generated: ${new Date().toLocaleString("ko-KR")}`,
+    ``,
+    `type:        ${st.type}`,
+    `type_en:     ${TYPE_EN[st.type] || "(custom)"}`,
+    `mode:        ${st.mode}`,
+    `ratio:       ${ratio ? ratio.id : "none"}`,
+    ``,
+    `subject:     ${$("subject").value.trim() || "(empty)"}`,
+    `subject_en:  ${en.subject || "(empty)"}`,
+    `style:       ${$("style").value.trim() || "(empty)"}`,
+    `style_en:    ${en.style || "(empty)"}`,
+    `colors:      ${$("colors").value.trim() || "(empty)"}`,
+    `colors_en:   ${en.colors || "(empty)"}`,
+    `composition: ${$("composition").value.trim() || "(empty)"}`,
+    `comp_en:     ${en.composition || "(empty)"}`,
+    `mood:        ${$("mood").value.trim() || "(empty)"}`,
+    `mood_en:     ${en.mood || "(empty)"}`,
+    `extra:       ${$("extra").value.trim() || "(empty)"}`,
+    `extra_en:    ${en.extra || "(empty)"}`,
+    ``,
+    `tech_flags:`,
+    ...tech.map(t => `  - ${t}`),
+    ``,
+    `chips:`,
+    ...chips.map(c => `  - ${c}`),
+    ``,
+    `quality_score: ${calcQuality().total}`,
+    `cache_size:    ${Object.keys(st.cache).length} entries`,
+  ];
+  return lines.join("\n");
+}
+
+function buildVariations(en) {
+  const typeEN = TYPE_EN[st.type] || st.type;
+  const tech = buildTechLines();
+  const chips = buildChipLines();
+
+  const v0 = `[Subject-Focused Variation]\nCreate a ${typeEN} illustration that prominently features: ${en.subject || "(subject)"}.\nEmphasize the subject's unique characteristics and visual details.\nStyle context: ${en.style || "versatile commercial style"}. Colors: ${en.colors || "harmonious palette"}.\n${tech.length ? "\nCore technical requirements:\n" + tech.slice(0,5).map(t=>"• "+t).join("\n") : ""}\nDeliver as a professional print-ready asset.`;
+
+  const v1 = `[Style-Focused Variation]\nCreate a ${typeEN} illustration in the style of: ${en.style || "clean commercial illustration"}.\nLet the art direction drive the visual language. Subject: ${en.subject || "(subject)"}.\nColor palette should reinforce the style: ${en.colors || "style-appropriate colors"}. Mood: ${en.mood || "professional"}.\n${chips.length ? "\nStyle keywords: " + chips.slice(0,8).join(", ") : ""}\nPrint-ready, commercially safe, no background.`;
+
+  const v2 = `[Technical-Focused Variation]\nProduce a ${typeEN} illustration optimized for print production.\nSubject: ${en.subject || "(subject)"}.\n\nCritical technical constraints:\n${tech.map(t=>"✓ "+t).join("\n")}\n${chips.length ? "\nComplementary keywords: " + chips.join(", ") : ""}\nOutput must meet professional print production standards with clean alpha channel.`;
+
+  return [v0, v1, v2];
+}
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function buildTechLines() {
+  const lines = [];
+  for (const [id, en] of Object.entries(OPTION_EN)) {
+    if ($(id) && $(id).checked) lines.push(en);
+  }
+  const ratio = document.querySelector('input[name="ratio"]:checked');
+  if (ratio) lines.push(RATIO_EN[ratio.id]);
+  return lines;
+}
+
+function buildChipLines() {
+  return [...document.querySelectorAll(".chip.on")].map(c => c.dataset.k);
+}
+
+// ─────────────────────────────────────────────
+// QUALITY SCORE
+// ─────────────────────────────────────────────
+function calcQuality() {
+  const subText = $("subject").value.trim();
+  const styText = $("style").value.trim();
+  const colText = $("colors").value.trim();
+  const cmpText = $("composition").value.trim();
+  const modText = $("mood").value.trim();
+  const techCount = Object.keys(OPTION_EN).filter(id => $(id) && $(id).checked).length;
+  const chipCount = document.querySelectorAll(".chip.on").length;
+
+  const scoreField = (text, ideal) => {
+    if (!text) return 0;
+    const words = text.split(/\s+/).filter(Boolean).length;
+    return Math.min(100, Math.round((words / ideal) * 80 + (text.length > 5 ? 20 : 0)));
+  };
+
+  const sub = scoreField(subText, 6);
+  const sty = scoreField(styText, 5);
+  const col = scoreField(colText, 3);
+  const cmp = scoreField(cmpText, 3);
+  const mod = scoreField(modText, 3);
+  const tch = Math.min(100, Math.round(((techCount / 8) * 0.7 + (chipCount / 6) * 0.3) * 100));
+
+  const total = Math.round(sub * 0.25 + sty * 0.20 + tch * 0.20 + col * 0.15 + cmp * 0.10 + mod * 0.10);
+
+  return { sub, sty, tch, col, cmp, mod, total };
+}
+
+function updateQuality() {
+  const q = calcQuality();
+  const items = [
+    ["sub", q.sub], ["sty", q.sty], ["tch", q.tch],
+    ["col", q.col], ["cmp", q.cmp], ["mod", q.mod],
+  ];
+  items.forEach(([key, val]) => {
+    const el = $("qs-" + key);
+    const bar = $("qsb-" + key);
+    if (el) el.textContent = val;
+    if (bar) {
+      bar.style.width = val + "%";
+      bar.style.background = val >= 70 ? "var(--success)" : val >= 40 ? "var(--warning)" : "var(--danger)";
+    }
+  });
+  $("qs-total").textContent = q.total;
+  const grade = q.total >= 85 ? "Excellent" : q.total >= 70 ? "Good" : q.total >= 50 ? "Fair" : q.total >= 30 ? "Needs Work" : "입력 필요";
+  $("qs-grade").textContent = grade;
+  $("qs-grade").style.color = q.total >= 85 ? "var(--success)" : q.total >= 70 ? "var(--primary)" : q.total >= 50 ? "var(--warning)" : "var(--danger)";
+  $("qs-note").textContent = `총점 (주제 25% · 스타일 20% · 기술 20% · 색감 15% · 구도 10% · 무드 10%)`;
+
+  const tips = [];
+  if (q.sub < 50) tips.push("주제를 더 구체적으로 설명하면 품질이 높아집니다");
+  if (q.sty < 50) tips.push("아트 스타일을 추가하면 AI가 더 정확하게 생성합니다");
+  if (q.col < 40) tips.push("색감 정보를 입력하면 원하는 색상 결과를 얻을 수 있습니다");
+  if (q.tch < 60) tips.push("기술 요건 체크박스와 스타일 칩을 더 선택해보세요");
+  if (q.cmp < 40) tips.push("구도/포즈 정보를 추가하면 더 정확한 구성이 됩니다");
+  if (q.mod < 40) tips.push("분위기/무드를 입력하면 전체 톤앤매너가 명확해집니다");
+  const tipsEl = $("qsTips");
+  tipsEl.innerHTML = tips.slice(0, 3).map(t =>
+    `<div class="qs-tip"><span class="dot"></span>${t}</div>`
+  ).join("");
+}
+
+// ─────────────────────────────────────────────
+// SYNTAX HIGHLIGHT
+// ─────────────────────────────────────────────
+function highlight(text) {
+  if (!text) return "";
+  return text.split("\n").map(line => {
+    if (line.startsWith("━")) return `<span class="hl-section">${esc(line)}</span>`;
+    if (/^(TASK|SUBJECT|ART STYLE|COLOR|COMPOSITION|MOOD|EXTRA|TECHNICAL|STYLE KEYWORDS|OUTPUT|DELIVERABLE|POSITIVE:|NEGATIVE:|# )/.test(line))
+      return `<span class="hl-key">${esc(line)}</span>`;
+    if (/^\[(?:TASK|SUBJECT|ART STYLE|COLOR PALETTE|COMPOSITION|MOOD|ADDITIONAL|TECHNICAL|STYLE|OUTPUT|DELIVERABLE|Subject|Style|Technical)\]/.test(line))
+      return `<span class="hl-key">${esc(line)}</span>`;
+    if (/^[✓•]\s/.test(line)) return `<span class="hl-tech">${esc(line)}</span>`;
+    if (/^✗\s/.test(line)) return `<span class="hl-neg">${esc(line)}</span>`;
+    if (/^--no/.test(line)) return `<span class="hl-neg">${esc(line)}</span>`;
+    if (/^#/.test(line)) return `<span class="hl-comment">${esc(line)}</span>`;
+    if (line.includes("--ar") || line.includes("--v ") || line.includes("--style") || line.includes("--q ") || line.includes("--no "))
+      return `<span class="hl-chip">${esc(line)}</span>`;
+    return `<span class="hl-plain">${esc(line)}</span>`;
+  }).join("\n");
+}
+
+function esc(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// ─────────────────────────────────────────────
+// COUNTER
+// ─────────────────────────────────────────────
+function updateCounter(text) {
+  const chars = text.length;
+  const tokens = Math.round(chars / 4);
+  $("counter").textContent = `${chars.toLocaleString()} chars · ~${tokens.toLocaleString()} tokens`;
+}
+
+// ─────────────────────────────────────────────
+// MAIN GENERATE
+// ─────────────────────────────────────────────
+async function generate() {
+  const btn = $("btnGenerate");
+  btn.disabled = true;
+  btn.textContent = "번역 중...";
+  $("promptBox").className = "prompt-box loading";
+  $("promptBox").textContent = "번역 및 프롬프트 생성 중...";
+
+  const [subjEN, styleEN, colorsEN, compEN, moodEN, extraEN] = await Promise.all([
+    translateKoToEn($("subject").value.trim()),
+    translateKoToEn($("style").value.trim()),
+    translateKoToEn($("colors").value.trim()),
+    translateKoToEn($("composition").value.trim()),
+    translateKoToEn($("mood").value.trim()),
+    translateKoToEn($("extra").value.trim()),
+  ]);
+
+  const en = {
+    subject: subjEN || $("subject").value.trim(),
+    style: styleEN || $("style").value.trim(),
+    colors: colorsEN || $("colors").value.trim(),
+    composition: compEN || $("composition").value.trim(),
+    mood: moodEN || $("mood").value.trim(),
+    extra: extraEN || $("extra").value.trim(),
+  };
+
+  st.prompts.gpt = buildGPT(en, st.mode);
+  st.prompts.mj  = buildMJ(en);
+  st.prompts.sd  = buildSD(en);
+  st.prompts.raw = buildRaw(en);
+  st.prompts.vars = buildVariations(en);
+
+  renderPrompt();
+  renderVariation();
+  updateCounter(st.prompts[st.fmt]);
+
+  if (en.subject) {
+    addHistory(en.subject.slice(0, 40) + (en.subject.length > 40 ? "…" : ""), st.prompts.gpt);
+  }
+
+  btn.disabled = false;
+  btn.textContent = "▶ 프롬프트 생성";
+  return st.prompts[st.fmt];
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+function renderPrompt() {
+  const text = st.prompts[st.fmt] || "";
+  const box = $("promptBox");
+  box.className = "prompt-box";
+  box.innerHTML = highlight(text);
+  updateCounter(text);
+}
+
+function renderVariation() {
+  const text = st.prompts.vars[st.varIdx] || "";
+  const box = $("varBox");
+  box.className = "prompt-box";
+  box.innerHTML = highlight(text);
+  box.style.minHeight = "100px";
+  box.style.fontSize = "11px";
+}
+
+// ─────────────────────────────────────────────
+// COPY / DOWNLOAD
+// ─────────────────────────────────────────────
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch(e) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+  }
+}
+
+// ─────────────────────────────────────────────
+// HISTORY
+// ─────────────────────────────────────────────
+function loadStorage() {
+  try {
+    st.history = JSON.parse(localStorage.getItem("pngpb_h") || "[]");
+    st.presets = JSON.parse(localStorage.getItem("pngpb_p") || "[]");
+  } catch(e) {
+    st.history = [];
+    st.presets = [];
+  }
+}
+
+function saveStorage() {
+  localStorage.setItem("pngpb_h", JSON.stringify(st.history.slice(0, 20)));
+  localStorage.setItem("pngpb_p", JSON.stringify(st.presets.slice(0, 30)));
+}
+
+function addHistory(label, prompt) {
+  st.history.unshift({ label, prompt, ts: Date.now() });
+  if (st.history.length > 20) st.history.pop();
+  saveStorage();
+  renderHistory();
+}
+
+function renderHistory() {
+  const bar = $("histBar");
+  bar.innerHTML = st.history.map((h, i) =>
+    `<div class="hist-item" data-i="${i}" title="${esc(h.prompt.slice(0,100))}">${esc(h.label)}</div>`
+  ).join("");
+  bar.querySelectorAll(".hist-item").forEach(el => {
+    el.addEventListener("click", () => {
+      $("promptBox").className = "prompt-box";
+      $("promptBox").innerHTML = highlight(st.history[+el.dataset.i].prompt);
+      updateCounter(st.history[+el.dataset.i].prompt);
+    });
+  });
+}
+
+// ─────────────────────────────────────────────
+// PRESETS
+// ─────────────────────────────────────────────
+const BUILTIN_PRESETS = [
+  {
+    name: "귀여운 마스코트",
+    data: { type: "캐릭터 디자인", subject: "귀엽고 친근한 마스코트 캐릭터", style: "말랑한 소프트 3D 광고 캐릭터", colors: "파스텔 톤, 따뜻한 색감", composition: "정면, 손을 흔드는 포즈", mood: "밝고 경쾌한, 어린이 친화적", extra: "" }
+  },
+  {
+    name: "아이콘 세트",
+    data: { type: "아이콘 디자인", subject: "비즈니스 업무 관련 아이콘 세트", style: "플랫 벡터 라인 아이콘", colors: "단색 또는 제한된 팔레트", composition: "균일한 크기, 중앙 정렬", mood: "깔끔하고 전문적", extra: "일관된 선 굵기" }
+  },
+  {
+    name: "인쇄용 소스",
+    data: { type: "인쇄용 소스 디자인", subject: "전통 문양 기반 장식 소스", style: "현대적 해석의 한국 전통 문양", colors: "골드, 딥 블루, 크림 화이트", composition: "대칭 구도, 여백 충분", mood: "고급스럽고 정제된", extra: "인쇄 즉시 사용 가능한 품질" }
+  },
+  {
+    name: "귀여운 오브젝트",
+    data: { type: "오브젝트 디자인", subject: "귀여운 음식 캐릭터 오브젝트", style: "치비 스타일 일러스트", colors: "밝고 채도 높은 색감", composition: "중앙 배치, 안정적 구도", mood: "귀엽고 식욕 돋는", extra: "" }
+  },
+];
+
+function renderPresets() {
+  const list = $("presetList");
+  $("presetCount").textContent = st.presets.length;
+
+  list.innerHTML = st.presets.map((p, i) =>
+    `<div class="preset-item" data-i="${i}">${esc(p.name)}<span class="del" data-i="${i}">✕</span></div>`
+  ).join("");
+
+  list.querySelectorAll(".preset-item").forEach(el => {
+    el.addEventListener("click", (e) => {
+      if (e.target.classList.contains("del")) {
+        const i = +e.target.dataset.i;
+        st.presets.splice(i, 1);
+        saveStorage();
+        renderPresets();
+        toast("프리셋이 삭제되었습니다");
+        return;
+      }
+      const preset = st.presets[+el.dataset.i];
+      if (preset) applyPresetData(preset.data);
+    });
+  });
+
+  const builtin = $("builtinPresets");
+  builtin.innerHTML = BUILTIN_PRESETS.map((p, i) =>
+    `<div class="preset-item builtin" data-bi="${i}">${esc(p.name)}</div>`
+  ).join("");
+  builtin.querySelectorAll(".preset-item").forEach(el => {
+    el.addEventListener("click", () => {
+      applyPresetData(BUILTIN_PRESETS[+el.dataset.bi].data);
+      toast("프리셋이 적용되었습니다");
+    });
+  });
+}
+
+function applyPresetData(data) {
+  if (data.type) {
+    st.type = data.type;
+    document.querySelectorAll(".type-tab").forEach(t => {
+      t.classList.toggle("active", t.dataset.type === data.type);
+    });
+  }
+  if (data.subject !== undefined) $("subject").value = data.subject;
+  if (data.style !== undefined)   $("style").value = data.style;
+  if (data.colors !== undefined)  $("colors").value = data.colors;
+  if (data.composition !== undefined) $("composition").value = data.composition;
+  if (data.mood !== undefined)    $("mood").value = data.mood;
+  if (data.extra !== undefined)   $("extra").value = data.extra;
+  updateQuality();
+}
+
+function getCurrentData() {
+  return {
+    type: st.type,
+    subject: $("subject").value,
+    style: $("style").value,
+    colors: $("colors").value,
+    composition: $("composition").value,
+    mood: $("mood").value,
+    extra: $("extra").value,
+  };
+}
+
+// ─────────────────────────────────────────────
+// CONFLICT CHECK
+// ─────────────────────────────────────────────
+function checkConflict() {
+  const is3D = [...document.querySelectorAll(".chip.on")].some(c => c.dataset.k && c.dataset.k.includes("3D"));
+  const isFlat = $("flatVector") && $("flatVector").checked;
+  const show = is3D && isFlat;
+  $("conflictSec").style.display = show ? "block" : "none";
+}
+
+// ─────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────
+function toast(msg) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 2200);
+}
+
+// ─────────────────────────────────────────────
+// RESET
+// ─────────────────────────────────────────────
+function resetAll() {
+  ["subject","style","colors","composition","mood","extra"].forEach(id => { if ($(id)) $(id).value = ""; });
+  document.querySelectorAll(".chip.on").forEach(c => c.classList.remove("on"));
+  document.querySelectorAll(".chk-label input[type=checkbox]").forEach(cb => {
+    cb.checked = ["transparent","shadowless","noBranding","highres","clean","safeCrop","original"].includes(cb.id);
+  });
+  const r = document.querySelector('input[name="ratio"]#ratio11');
+  if (r) { r.checked = true; updateRatioUI(); }
+  updateQuality();
+  checkConflict();
+  $("promptBox").className = "prompt-box";
+  $("promptBox").textContent = "프롬프트를 생성하려면 주제를 입력하고 \"프롬프트 생성\" 버튼을 클릭하세요.";
+  $("varBox").textContent = "변형 프롬프트는 생성 후 표시됩니다.";
+  $("counter").textContent = "0 chars · 0 tokens";
+  toast("초기화되었습니다");
+}
+
+function updateRatioUI() {
+  document.querySelectorAll(".ratio-btn").forEach(lbl => {
+    const inp = lbl.querySelector("input");
+    lbl.classList.toggle("active", inp && inp.checked);
+  });
+}
+
+// ─────────────────────────────────────────────
+// EVENT BINDING
+// ─────────────────────────────────────────────
+function init() {
+  loadStorage();
+
+  // Type tabs
+  document.querySelectorAll(".type-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      st.type = tab.dataset.type;
+      document.querySelectorAll(".type-tab").forEach(t => t.classList.toggle("active", t === tab));
+    });
+  });
+
+  // Mode tabs
+  document.querySelectorAll(".mode-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      st.mode = btn.dataset.mode;
+      document.querySelectorAll(".mode-btn").forEach(b => b.classList.toggle("active", b === btn));
+      if (st.prompts.gpt) renderPrompt();
+    });
+  });
+
+  // Format tabs
+  document.querySelectorAll(".fmt-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      st.fmt = btn.dataset.fmt;
+      document.querySelectorAll(".fmt-btn").forEach(b => b.classList.toggle("active", b === btn));
+      renderPrompt();
+    });
+  });
+
+  // Variation tabs
+  document.querySelectorAll(".var-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      st.varIdx = +btn.dataset.var;
+      document.querySelectorAll(".var-btn").forEach(b => b.classList.toggle("active", b === btn));
+      renderVariation();
+    });
+  });
+
+  // Chips
+  document.querySelectorAll(".chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      chip.classList.toggle("on");
+      checkConflict();
+      updateQuality();
+    });
+  });
+
+  // Ratio
+  document.querySelectorAll('input[name="ratio"]').forEach(r => {
+    r.addEventListener("change", () => { updateRatioUI(); updateQuality(); });
+  });
+
+  // Checkboxes live quality
+  document.querySelectorAll(".chk-label input").forEach(cb => {
+    cb.addEventListener("change", () => { checkConflict(); updateQuality(); });
+  });
+
+  // Fields live quality
+  ["subject","style","colors","composition","mood","extra"].forEach(id => {
+    if ($(id)) $(id).addEventListener("input", updateQuality);
+  });
+
+  // Generate
+  $("btnGenerate").addEventListener("click", generate);
+
+  // Copy
+  $("btnCopy").addEventListener("click", async () => {
+    const text = st.prompts[st.fmt] || await generate();
+    await copyText(text);
+    toast("클립보드에 복사되었습니다");
+  });
+
+  // Download
+  $("btnDownload").addEventListener("click", async () => {
+    const text = st.prompts[st.fmt] || await generate();
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `prompt_${Date.now()}.txt`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast("TXT 파일로 저장되었습니다");
+  });
+
+  // Copy all formats
+  $("btnCopyAll").addEventListener("click", async () => {
+    if (!st.prompts.gpt) { toast("먼저 프롬프트를 생성하세요"); return; }
+    const all = [
+      "=== GPT Image ===\n" + st.prompts.gpt,
+      "\n\n=== Midjourney ===\n" + st.prompts.mj,
+      "\n\n=== Stable Diffusion ===\n" + st.prompts.sd,
+    ].join("");
+    await copyText(all);
+    toast("3종 포맷이 모두 복사되었습니다");
+  });
+
+  // Reset
+  $("btnReset").addEventListener("click", resetAll);
+
+  // Save preset
+  $("btnSavePreset").addEventListener("click", () => {
+    $("presetNameInput").value = "";
+    $("presetModal").classList.add("show");
+    setTimeout(() => $("presetNameInput").focus(), 50);
+  });
+  $("btnModalCancel").addEventListener("click", () => $("presetModal").classList.remove("show"));
+  $("btnModalSave").addEventListener("click", () => {
+    const name = $("presetNameInput").value.trim();
+    if (!name) { toast("이름을 입력해주세요"); return; }
+    st.presets.unshift({ name, data: getCurrentData() });
+    saveStorage();
+    renderPresets();
+    $("presetModal").classList.remove("show");
+    toast(`"${name}" 프리셋이 저장되었습니다`);
+  });
+  $("presetNameInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") $("btnModalSave").click();
+    if (e.key === "Escape") $("presetModal").classList.remove("show");
+  });
+  $("presetModal").addEventListener("click", e => {
+    if (e.target === $("presetModal")) $("presetModal").classList.remove("show");
+  });
+
+  // History clear
+  $("btnClearHist").addEventListener("click", () => {
+    st.history = [];
+    saveStorage();
+    renderHistory();
+    toast("히스토리가 삭제되었습니다");
+  });
+
+  // Init renders
+  updateQuality();
+  renderHistory();
+  renderPresets();
+  updateRatioUI();
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
