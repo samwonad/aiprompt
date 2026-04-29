@@ -1160,7 +1160,7 @@ function buildGPT(en, mode) {
     if ($("o_safe")?.checked)      techKey.push("full subject in frame");
     if ($("o_original")?.checked)  techKey.push("original design");
 
-    let out = `Create a ${type}: ${parts.join(", ")}.`;
+    let out = `Create a ${type} on transparent background: ${parts.join(", ")}.`;
     out += ` ${techKey.join(", ")}.`;
     if (chips.length) out += ` ${chips.join(", ")}.`;
     if (ratio) out += ` Aspect ratio ${ratio}.`;
@@ -1168,7 +1168,7 @@ function buildGPT(en, mode) {
   }
 
   if (mode === "structured") {
-    const lines = [`Create a ${type} illustration.`, ""];
+    const lines = [`Create a ${type} illustration on transparent background.`, ""];
     if (en.subject)  lines.push(`Subject: ${en.subject}`);
     if (en.style)    lines.push(`Art style: ${en.style}`);
     if (en.colors)   lines.push(`Color palette: ${en.colors}`);
@@ -1183,7 +1183,7 @@ function buildGPT(en, mode) {
 
   if (mode === "expert") {
     const sep = "─".repeat(44);
-    const lines = [sep, `TASK  Create a ${type} for commercial print use.`, sep];
+    const lines = [sep, `TASK  Create a ${type} on transparent background for commercial print use.`, sep];
     if (en.subject)  lines.push(`SUBJECT      ${en.subject}`);
     if (en.style)    lines.push(`STYLE        ${en.style}`);
     if (en.colors)   lines.push(`COLORS       ${en.colors}`);
@@ -1229,14 +1229,14 @@ function buildGemini(en, mode) {
     if ($("o_original")?.checked)  reqs.push("original artwork, not based on existing IP");
     if (ratio) reqs.push(`${ratio} aspect ratio`);
 
-    let out = `Generate a ${type}: ${desc.join(", ")}.`;
+    let out = `Generate a ${type} on transparent background: ${desc.join(", ")}.`;
     out += ` Requirements: ${reqs.join("; ")}.`;
     if (chips.length) out += ` Style keywords: ${chips.slice(0, 8).join(", ")}.`;
     return out;
   }
 
   if (mode === "structured") {
-    const lines = [`Generate a ${type} illustration.`, ""];
+    const lines = [`Generate a ${type} illustration on transparent background.`, ""];
     if (en.subject)  lines.push(`Description: ${en.subject}`);
     if (en.style)    lines.push(`Style: ${en.style}`);
     if (en.colors)   lines.push(`Colors: ${en.colors}`);
@@ -1251,7 +1251,7 @@ function buildGemini(en, mode) {
 
   if (mode === "expert") {
     const sep = "─".repeat(44);
-    const lines = [sep, `GENERATE  A ${type} for commercial print.`, sep];
+    const lines = [sep, `GENERATE  A ${type} on transparent background for commercial print.`, sep];
     if (en.subject)  lines.push(`DESCRIPTION  ${en.subject}`);
     if (en.style)    lines.push(`STYLE        ${en.style}`);
     if (en.colors)   lines.push(`COLORS       ${en.colors}`);
