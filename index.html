@@ -105,6 +105,7 @@ body {
 .seg-btn.on.fmt { background: var(--ind-bg); color: var(--ind); border: 1px solid var(--ind-border); }
 .hdr-space { flex: 1; }
 .hdr-stat { font-size: 11px; color: var(--t4); }
+.hdr-stat.dirty { color: var(--ylw); }
 .btn-gen {
   font-family: 'Inter', sans-serif;
   font-size: 12px;
@@ -514,6 +515,16 @@ body {
   margin-bottom: 8px;
   padding-left: 2px;
 }
+.dirty-note {
+  background: var(--ylw-bg);
+  border: 1px solid rgba(251,191,36,.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--ylw);
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 10px;
+}
 
 /* ── CONFLICT ── */
 .conflict {
@@ -614,6 +625,37 @@ body {
 }
 .modal-input:focus { border-color: var(--ind-border); }
 .modal-row { display: flex; gap: 8px; justify-content: flex-end; }
+
+@media (max-width: 900px) {
+  .hdr {
+    height: auto;
+    min-height: 56px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  .hdr-div, .hdr-space { display: none; }
+  .seg { max-width: 100%; overflow-x: auto; }
+  .layout {
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+  }
+  .pane-l, .pane-r {
+    overflow: visible;
+    border-right: none;
+  }
+  .r-body { padding: 16px; }
+  .ftr { padding: 0 14px; }
+}
+
+@media (max-width: 560px) {
+  .type-grid, .toggle-grid { grid-template-columns: 1fr; }
+  .ratio-row { flex-wrap: wrap; }
+  .ratio-opt { min-width: 30%; }
+  .act-row .btn, .btn-gen, .btn-gen-reset { flex: 1 1 auto; justify-content: center; }
+  .modal { width: calc(100vw - 32px); }
+}
 </style>
 </head>
 <body>
@@ -630,6 +672,11 @@ body {
   <div class="seg" id="fmtSeg">
     <button class="seg-btn fmt on" data-fmt="gpt">GPT Image 2</button>
     <button class="seg-btn fmt" data-fmt="gemini">Gemini Imagen</button>
+  </div>
+  <div class="hdr-div"></div>
+  <div class="seg" id="trSeg">
+    <button class="seg-btn fmt on" data-tr="on">자동 번역</button>
+    <button class="seg-btn fmt" data-tr="off">원문 유지</button>
   </div>
   <div class="hdr-space"></div>
   <div class="hdr-stat" id="statEl">—</div>
@@ -940,7 +987,8 @@ const TYPE_EN = {
 
 // Always injected into every prompt regardless of toggle state
 const ALWAYS_TECH_EN = [
-  "transparent background",
+  "actual transparent background with alpha channel, not white, not gray, not checkerboard",
+  "isolated cutout PNG asset with no backdrop, no canvas, no scene, no floor",
   "high resolution print-ready quality",
 ];
 
@@ -955,12 +1003,12 @@ const TECH_EN = {
   o_infog:    "infographic-style composition",
   o_line:     "clean line art with defined outlines",
   o_simple:   "simple flat coloring, minimal color complexity",
-  o_removesky:"no sky, no background scenery",
+  o_removesky:"no sky, no background scenery, no environment, no backdrop",
 };
 
 const TECH_CHIP_EN = {
   "합성하기 쉽게":             "easy to composite on any background",
-  "고해상도 투명 PNG":         "high resolution transparent PNG",
+  "고해상도 투명 PNG":         "high resolution transparent PNG with real alpha channel",
   "깔끔한 실루엣":             "clean silhouette",
   "외곽선 선명하게":           "sharp well-defined outlines",
   "가장자리 깨끗하게":         "clean smooth edges",
@@ -983,7 +1031,7 @@ const TECH_CHIP_EN = {
   "평면 벡터 느낌":            "flat vector style",
   "두꺼운 라인":               "thick bold outlines",
   "둥근 형태":                 "rounded shapes",
-  "불필요한 배경 없음":        "no background elements",
+  "불필요한 배경 없음":        "no background elements, no backdrop, no scene",
   "바닥 그림자 없음":          "no ground shadow",
   "워터마크 없음":             "no watermark",
   "로고 없음":                 "no logo",
@@ -1064,7 +1112,10 @@ const ST = {
   mode: "natural",
   fmt:  "gpt",
   vi:   0,
+  translate: true,
+  dirty: false,
   out:  { gpt:"", gemini:"", ko:"", vars:["","",""] },
+  lastEn: null,
   hist: [],
   pre:  [],
   cache: {},
@@ -1126,6 +1177,32 @@ function getRatioId() {
   return r ? r.id : "r11";
 }
 
+function getRawFields() {
+  return {
+    subject: $("subject").value.trim(),
+    style:   $("style").value.trim(),
+    colors:  $("colors").value.trim(),
+    mood:    $("mood").value.trim(),
+    extra:   $("extra").value.trim(),
+  };
+}
+
+function setDirty() {
+  if (!ST.out.gpt && !ST.out.gemini) return;
+  ST.dirty = true;
+  renderOut();
+  renderVar();
+}
+
+function buildOutputs(en) {
+  ST.out.gpt    = buildGPT(en, ST.mode);
+  ST.out.gemini = buildGemini(en, ST.mode);
+  ST.out.ko     = buildKoSummary();
+  ST.out.vars   = buildVariations(en);
+  ST.lastEn     = en;
+  ST.dirty      = false;
+}
+
 // ════════════════════════════════════
 // PROMPT BUILDERS
 // ════════════════════════════════════
@@ -1134,6 +1211,7 @@ function buildGPT(en, mode) {
   const tech = [...ALWAYS_TECH_EN, ...getCheckedTech()];
   const chips = getChips();
   const ratio = RATIO_EN[getRatioId()];
+  const alphaRule = "Output must be a PNG asset with real alpha transparency. The background area must be empty transparent pixels, not white, not gray, not colored, not checkerboard, and not a studio backdrop.";
 
   if (mode === "natural") {
     const parts = [];
@@ -1145,7 +1223,8 @@ function buildGPT(en, mode) {
     if (en.extra) parts.push(en.extra);
 
     const techKey = [
-      "transparent background, PNG with alpha channel",
+      "real transparent background, PNG with alpha channel",
+      "empty transparent pixels around the subject, no visible canvas",
       "high resolution print-ready",
     ];
     if ($("o_public")?.checked)    techKey.push("public-friendly institutional style");
@@ -1160,21 +1239,23 @@ function buildGPT(en, mode) {
     if ($("o_safe")?.checked)      techKey.push("full subject in frame");
     if ($("o_original")?.checked)  techKey.push("original design");
 
-    let out = `Create a ${type} on transparent background: ${parts.join(", ")}.`;
+    let out = `Create a ${type} as an isolated transparent PNG cutout: ${parts.join(", ")}.`;
     out += ` ${techKey.join(", ")}.`;
+    out += ` ${alphaRule}`;
     if (chips.length) out += ` ${chips.join(", ")}.`;
     if (ratio) out += ` Aspect ratio ${ratio}.`;
     return out;
   }
 
   if (mode === "structured") {
-    const lines = [`Create a ${type} illustration on transparent background.`, ""];
+    const lines = [`Create a ${type} as an isolated transparent PNG cutout.`, ""];
     if (en.subject)  lines.push(`Subject: ${en.subject}`);
     if (en.style)    lines.push(`Art style: ${en.style}`);
     if (en.colors)   lines.push(`Color palette: ${en.colors}`);
     if (en.mood)     lines.push(`Mood: ${en.mood}`);
     if (en.extra)    lines.push(`Additional: ${en.extra}`);
     lines.push(""); lines.push("Technical:");
+    lines.push(`- ${alphaRule}`);
     tech.forEach(t => lines.push(`- ${t}`));
     if (chips.length) { lines.push(""); lines.push(`Keywords: ${chips.join(", ")}`); }
     if (ratio) { lines.push(""); lines.push(`Output: ${ratio} aspect ratio`); }
@@ -1183,13 +1264,14 @@ function buildGPT(en, mode) {
 
   if (mode === "expert") {
     const sep = "─".repeat(44);
-    const lines = [sep, `TASK  Create a ${type} on transparent background for commercial print use.`, sep];
+    const lines = [sep, `TASK  Create a ${type} as an isolated transparent PNG cutout for commercial print use.`, sep];
     if (en.subject)  lines.push(`SUBJECT      ${en.subject}`);
     if (en.style)    lines.push(`STYLE        ${en.style}`);
     if (en.colors)   lines.push(`COLORS       ${en.colors}`);
     if (en.mood)     lines.push(`MOOD         ${en.mood}`);
     if (en.extra)    lines.push(`EXTRA        ${en.extra}`);
     lines.push(sep); lines.push("REQUIREMENTS");
+    lines.push(`  ✓ ${alphaRule}`);
     tech.forEach(t => lines.push(`  ✓ ${t}`));
     if (chips.length){ lines.push(sep); lines.push(`KEYWORDS     ${chips.join(" · ")}`); }
     if (ratio)       { lines.push(sep); lines.push(`OUTPUT       ${ratio} aspect ratio`); }
@@ -1204,6 +1286,7 @@ function buildGemini(en, mode) {
   const tech = [...ALWAYS_TECH_EN, ...getCheckedTech()];
   const chips = getChips();
   const ratio = RATIO_EN[getRatioId()];
+  const alphaRule = "Return an isolated PNG-style asset with real alpha transparency. The entire area around the subject must be transparent empty pixels, not white, not gray, not colored, not checkerboard, and not a studio backdrop.";
 
   if (mode === "natural") {
     const desc = [en.subject || `a ${type}`];
@@ -1213,7 +1296,8 @@ function buildGemini(en, mode) {
     if (en.extra)  desc.push(en.extra);
 
     const reqs = [
-      "isolated on transparent background",
+      "isolated on real transparent background with alpha channel",
+      "no visible canvas, no backdrop, no floor, no environment",
       "high resolution print quality",
     ];
     if ($("o_public")?.checked)    reqs.push("clean institutional style appropriate for public use");
@@ -1229,20 +1313,22 @@ function buildGemini(en, mode) {
     if ($("o_original")?.checked)  reqs.push("original artwork, not based on existing IP");
     if (ratio) reqs.push(`${ratio} aspect ratio`);
 
-    let out = `Generate a ${type} on transparent background: ${desc.join(", ")}.`;
+    let out = `Generate a ${type} as an isolated transparent PNG cutout: ${desc.join(", ")}.`;
+    out += ` ${alphaRule}`;
     out += ` Requirements: ${reqs.join("; ")}.`;
     if (chips.length) out += ` Style keywords: ${chips.slice(0, 8).join(", ")}.`;
     return out;
   }
 
   if (mode === "structured") {
-    const lines = [`Generate a ${type} illustration on transparent background.`, ""];
+    const lines = [`Generate a ${type} as an isolated transparent PNG cutout.`, ""];
     if (en.subject)  lines.push(`Description: ${en.subject}`);
     if (en.style)    lines.push(`Style: ${en.style}`);
     if (en.colors)   lines.push(`Colors: ${en.colors}`);
     if (en.mood)     lines.push(`Mood: ${en.mood}`);
     if (en.extra)    lines.push(`Details: ${en.extra}`);
     lines.push(""); lines.push("Constraints:");
+    lines.push(`- ${alphaRule}`);
     tech.forEach(t => lines.push(`- ${t}`));
     if (chips.length) { lines.push(""); lines.push(`Style tags: ${chips.join(", ")}`); }
     if (ratio) { lines.push(""); lines.push(`Aspect ratio: ${ratio}`); }
@@ -1251,13 +1337,14 @@ function buildGemini(en, mode) {
 
   if (mode === "expert") {
     const sep = "─".repeat(44);
-    const lines = [sep, `GENERATE  A ${type} on transparent background for commercial print.`, sep];
+    const lines = [sep, `GENERATE  A ${type} as an isolated transparent PNG cutout for commercial print.`, sep];
     if (en.subject)  lines.push(`DESCRIPTION  ${en.subject}`);
     if (en.style)    lines.push(`STYLE        ${en.style}`);
     if (en.colors)   lines.push(`COLORS       ${en.colors}`);
     if (en.mood)     lines.push(`MOOD         ${en.mood}`);
     if (en.extra)    lines.push(`DETAILS      ${en.extra}`);
     lines.push(sep); lines.push("CONSTRAINTS");
+    lines.push(`  ✓ ${alphaRule}`);
     tech.forEach(t => lines.push(`  ✓ ${t}`));
     if (chips.length){ lines.push(sep); lines.push(`STYLE TAGS   ${chips.join(" · ")}`); }
     if (ratio)       { lines.push(sep); lines.push(`RATIO        ${ratio}`); }
@@ -1368,6 +1455,9 @@ function renderOut() {
   } else {
     body.className = "output-body";
     let html = "";
+    if (ST.dirty) {
+      html += `<div class="dirty-note">설정이 변경되었습니다. 현재 출력은 이전 생성 결과입니다. 다시 생성하세요.</div>`;
+    }
     if (ST.out.ko) {
       html += `<div class="ko-block">${esc(ST.out.ko).replace(/\n/g, "<br>")}</div>`;
       html += `<div class="ko-divider">▼ 생성된 프롬프트</div>`;
@@ -1380,7 +1470,8 @@ function renderOut() {
   const modeLabel = { natural:"Natural", structured:"Structured", expert:"Expert" }[ST.mode];
   const fmtLabel  = { gpt:"GPT Image 2", gemini:"Gemini Imagen" }[ST.fmt] || ST.fmt;
   $("outTitle").textContent = `${fmtLabel} — ${modeLabel} mode`;
-  $("statEl").textContent = chars ? `${chars.toLocaleString()} chars` : "—";
+  $("statEl").textContent = ST.dirty ? "변경됨 · 재생성 필요" : (chars ? `${chars.toLocaleString()} chars` : "—");
+  $("statEl").classList.toggle("dirty", ST.dirty);
 }
 
 function renderVar() {
@@ -1388,7 +1479,7 @@ function renderVar() {
   const body = $("varBody");
   if (!text) { body.style.color = "var(--t4)"; body.innerHTML = "생성 후 표시됩니다."; return; }
   body.style.color = "";
-  body.innerHTML = highlight(text, "gpt");
+  body.innerHTML = (ST.dirty ? `<div class="dirty-note">설정 변경 전 변형입니다. 다시 생성하세요.</div>` : "") + highlight(text, "gpt");
 }
 
 // ════════════════════════════════════
@@ -1404,8 +1495,18 @@ function saveSt() {
   localStorage.setItem("ps_p",  JSON.stringify(ST.pre.slice(0, 30)));
   localStorage.setItem("ps_db", JSON.stringify(ST.deletedBuiltins));
 }
-function addHist(label, text) {
-  ST.hist.unshift({ label, text, ts: Date.now() });
+function addHist(label) {
+  ST.hist.unshift({
+    label,
+    text: ST.out.gpt,
+    gpt: ST.out.gpt,
+    gemini: ST.out.gemini,
+    ko: ST.out.ko,
+    vars: ST.out.vars,
+    mode: ST.mode,
+    type: ST.type,
+    ts: Date.now()
+  });
   if (ST.hist.length > 20) ST.hist.pop();
   saveSt(); renderHist();
 }
@@ -1416,8 +1517,19 @@ function renderHist() {
   ).join("");
   bar.querySelectorAll(".hist-item").forEach(el => {
     el.addEventListener("click", () => {
-      $("outBody").className = "output-body";
-      $("outBody").innerHTML = highlight(ST.hist[+el.dataset.i].text, ST.fmt);
+      const h = ST.hist[+el.dataset.i];
+      ST.out = {
+        gpt: h.gpt || h.text || "",
+        gemini: h.gemini || h.text || "",
+        ko: h.ko || "",
+        vars: h.vars || ["","",""]
+      };
+      ST.mode = h.mode || ST.mode;
+      ST.lastEn = null;
+      ST.dirty = false;
+      document.querySelectorAll("#modeSeg .seg-btn").forEach(x => x.classList.toggle("on", x.dataset.mode === ST.mode));
+      renderOut();
+      renderVar();
     });
   });
 }
@@ -1437,6 +1549,7 @@ function applyPresetData(d) {
   if (d.mood    !== undefined) $("mood").value    = d.mood;
   if (d.extra   !== undefined) $("extra").value   = d.extra;
   updateQuality();
+  setDirty();
 }
 
 function getCurrentData() {
@@ -1536,6 +1649,8 @@ function resetAll() {
   const r = $("r43"); if(r) { r.checked=true; updateRatioUI(); }
   applyTypeConfig(ST.type);
   ST.out = { gpt:"", gemini:"", ko:"", vars:["","",""] };
+  ST.lastEn = null;
+  ST.dirty = false;
   renderOut(); renderVar();
   toast("초기화되었습니다");
 }
@@ -1553,36 +1668,35 @@ async function generate() {
   const btn = $("btnGen");
   btn.disabled = true;
   btn.classList.add("loading");
+  try {
+    const raw = getRawFields();
+    const translated = ST.translate
+      ? await Promise.all([tr(raw.subject), tr(raw.style), tr(raw.colors), tr(raw.mood), tr(raw.extra)])
+      : [raw.subject, raw.style, raw.colors, raw.mood, raw.extra];
 
-  const [subEN, styEN, colEN, modEN, extEN] = await Promise.all([
-    tr($("subject").value.trim()),
-    tr($("style").value.trim()),
-    tr($("colors").value.trim()),
-    tr($("mood").value.trim()),
-    tr($("extra").value.trim()),
-  ]);
+    const [subEN, styEN, colEN, modEN, extEN] = translated;
+    const en = {
+      subject: subEN || raw.subject,
+      style:   styEN || raw.style,
+      colors:  colEN || raw.colors,
+      mood:    modEN || raw.mood,
+      extra:   extEN || raw.extra,
+    };
 
-  const en = {
-    subject: subEN || $("subject").value.trim(),
-    style:   styEN || $("style").value.trim(),
-    colors:  colEN || $("colors").value.trim(),
-    mood:    modEN || $("mood").value.trim(),
-    extra:   extEN || $("extra").value.trim(),
-  };
+    buildOutputs(en);
+    renderOut(); renderVar();
 
-  ST.out.gpt    = buildGPT(en, ST.mode);
-  ST.out.gemini = buildGemini(en, ST.mode);
-  ST.out.ko     = buildKoSummary();
-  ST.out.vars   = buildVariations(en);
+    const label = (en.subject || raw.subject || "Untitled").slice(0, 45);
+    if (label) addHist(label);
 
-  renderOut(); renderVar();
-
-  const label = (en.subject || $("subject").value || "Untitled").slice(0, 45);
-  if (label) addHist(label, ST.out.gpt);
-
-  btn.disabled = false;
-  btn.classList.remove("loading");
-  return ST.out[ST.fmt];
+    return ST.out[ST.fmt];
+  } catch(e) {
+    toast("생성 중 오류가 발생했습니다");
+    throw e;
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove("loading");
+  }
 }
 
 // ════════════════════════════════════
@@ -1597,6 +1711,7 @@ function init() {
       ST.type = c.dataset.type;
       document.querySelectorAll(".type-card").forEach(x => x.classList.toggle("on", x === c));
       applyTypeConfig(ST.type);
+      setDirty();
     });
   });
 
@@ -1605,7 +1720,10 @@ function init() {
     b.addEventListener("click", () => {
       ST.mode = b.dataset.mode;
       document.querySelectorAll("#modeSeg .seg-btn").forEach(x => x.classList.toggle("on", x === b));
-      if (ST.out.gpt) renderOut();
+      if (ST.lastEn && !ST.dirty) buildOutputs(ST.lastEn);
+      else setDirty();
+      renderOut();
+      renderVar();
     });
   });
 
@@ -1615,6 +1733,15 @@ function init() {
       ST.fmt = b.dataset.fmt;
       document.querySelectorAll("#fmtSeg .seg-btn").forEach(x => x.classList.toggle("on", x === b));
       renderOut();
+    });
+  });
+
+  // Translation mode
+  document.querySelectorAll("#trSeg .seg-btn").forEach(b => {
+    b.addEventListener("click", () => {
+      ST.translate = b.dataset.tr === "on";
+      document.querySelectorAll("#trSeg .seg-btn").forEach(x => x.classList.toggle("on", x === b));
+      setDirty();
     });
   });
 
@@ -1629,7 +1756,7 @@ function init() {
 
   // Chips
   document.querySelectorAll(".chip").forEach(c => {
-    c.addEventListener("click", () => { c.classList.toggle("on"); checkConflict(); updateQuality(); });
+    c.addEventListener("click", () => { c.classList.toggle("on"); checkConflict(); updateQuality(); setDirty(); });
   });
 
   // Toggles
@@ -1640,18 +1767,19 @@ function init() {
       setTimeout(() => {
         lbl.classList.toggle("on", cb.checked);
         checkConflict(); updateQuality();
+        setDirty();
       }, 0);
     });
   });
 
   // Ratio
   document.querySelectorAll('input[name="ratio"]').forEach(r => {
-    r.addEventListener("change", () => { updateRatioUI(); updateQuality(); });
+    r.addEventListener("change", () => { updateRatioUI(); updateQuality(); setDirty(); });
   });
 
   // Live quality on fields
   ["subject","style","colors","mood","extra"].forEach(id => {
-    $(id)?.addEventListener("input", updateQuality);
+    $(id)?.addEventListener("input", () => { updateQuality(); setDirty(); });
   });
 
   // Generate
@@ -1659,13 +1787,13 @@ function init() {
 
   // Copy
   $("btnCopy").addEventListener("click", async () => {
-    const t = ST.out[ST.fmt] || await generate();
+    const t = (!ST.out[ST.fmt] || ST.dirty) ? await generate() : ST.out[ST.fmt];
     await copyText(t); toast("복사되었습니다");
   });
 
   // Download
   $("btnDL").addEventListener("click", async () => {
-    const t = ST.out[ST.fmt] || await generate();
+    const t = (!ST.out[ST.fmt] || ST.dirty) ? await generate() : ST.out[ST.fmt];
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([t], { type:"text/plain;charset=utf-8" }));
     a.download = `prompt_${Date.now()}.txt`;
@@ -1675,7 +1803,7 @@ function init() {
 
   // Copy all
   $("btnAll").addEventListener("click", async () => {
-    if (!ST.out.gpt) { toast("먼저 프롬프트를 생성하세요"); return; }
+    if (!ST.out.gpt || ST.dirty) await generate();
     const all = `=== GPT Image 2 ===\n${ST.out.gpt}\n\n=== Gemini Imagen ===\n${ST.out.gemini}`;
     await copyText(all); toast("두 포맷 모두 복사됨");
   });
