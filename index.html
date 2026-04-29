@@ -3,411 +3,801 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PNG Prompt Builder — Professional</title>
+<title>AI Prompt Studio</title>
 <style>
-:root {
-  --bg: #0d1117;
-  --surface: #161b22;
-  --surface-2: #1c2128;
-  --surface-3: #21262d;
-  --border: #30363d;
-  --border-2: #3d4449;
-  --text: #e6edf3;
-  --text-2: #8b949e;
-  --text-3: #6e7681;
-  --primary: #2f81f7;
-  --primary-muted: rgba(47,129,247,.15);
-  --success: #3fb950;
-  --success-muted: rgba(63,185,80,.12);
-  --warning: #d29922;
-  --warning-muted: rgba(210,153,34,.12);
-  --danger: #f85149;
-  --danger-muted: rgba(248,81,73,.12);
-  --accent: #a371f7;
-  --accent-muted: rgba(163,113,247,.12);
-  --r: 6px;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 14px; }
-body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
 
-/* HEADER */
-.hdr { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; height: 52px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-.hdr-logo { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
-.hdr-logo span { color: var(--primary); }
-.hdr-badge { font-size: 10px; font-weight: 600; background: var(--accent-muted); color: var(--accent); border: 1px solid var(--accent); border-radius: 20px; padding: 1px 7px; }
-.hdr-spacer { flex: 1; }
-.hdr-link { font-size: 12px; color: var(--text-3); text-decoration: none; padding: 4px 8px; border-radius: var(--r); transition: background .15s; }
-.hdr-link:hover { background: var(--surface-3); color: var(--text-2); }
-
-/* LAYOUT */
-.main { display: grid; grid-template-columns: 380px 1fr; flex: 1; min-height: 0; overflow: hidden; }
-.panel-l { background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; }
-.panel-r { background: var(--bg); overflow-y: auto; display: flex; flex-direction: column; }
-
-/* SECTION */
-.sec { padding: 16px 20px; border-bottom: 1px solid var(--border); }
-.sec:last-child { border-bottom: none; }
-.sec-title { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-.sec-title .badge { font-size: 9px; font-weight: 600; background: var(--primary-muted); color: var(--primary); padding: 1px 5px; border-radius: 20px; text-transform: none; letter-spacing: 0; }
-
-/* TYPE TABS */
-.type-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.type-tab { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r); padding: 8px 10px; cursor: pointer; font-size: 12px; color: var(--text-2); transition: all .15s; text-align: center; }
-.type-tab:hover { border-color: var(--border-2); color: var(--text); }
-.type-tab.active { background: var(--primary-muted); border-color: var(--primary); color: var(--primary); font-weight: 600; }
-
-/* FORM */
-.field { margin-bottom: 10px; }
-.field-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-.field-label { font-size: 11px; font-weight: 600; color: var(--text-2); }
-.field-hint { font-size: 10px; color: var(--text-3); margin-left: auto; }
-.field input[type=text], .field textarea {
-  width: 100%; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r);
-  color: var(--text); font-size: 12px; padding: 7px 10px; outline: none; resize: none;
-  transition: border-color .15s;
-  font-family: inherit;
+:root {
+  --bg: #080810;
+  --s1: #0f0f1a;
+  --s2: #15151f;
+  --s3: #1c1c28;
+  --s4: #242434;
+  --border: rgba(255,255,255,.07);
+  --border2: rgba(255,255,255,.12);
+  --t1: #f0f0ff;
+  --t2: #a0a0c0;
+  --t3: #606080;
+  --t4: #404060;
+  --ind: #818cf8;
+  --ind2: #6366f1;
+  --ind-bg: rgba(99,102,241,.12);
+  --ind-border: rgba(99,102,241,.35);
+  --grn: #34d399;
+  --grn-bg: rgba(52,211,153,.1);
+  --ylw: #fbbf24;
+  --ylw-bg: rgba(251,191,36,.1);
+  --red: #f87171;
+  --red-bg: rgba(248,113,113,.1);
+  --pur: #c084fc;
+  --pur-bg: rgba(192,132,252,.1);
+  --r: 10px;
+  --r2: 16px;
 }
-.field input[type=text]:focus, .field textarea:focus { border-color: var(--primary); }
-.field textarea { min-height: 54px; line-height: 1.5; }
 
-/* CHIPS */
-.chips { display: flex; flex-wrap: wrap; gap: 5px; }
-.chip { font-size: 11px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 3px 9px; cursor: pointer; color: var(--text-2); transition: all .15s; white-space: nowrap; }
-.chip:hover { border-color: var(--border-2); color: var(--text); }
-.chip.on { background: var(--primary-muted); border-color: var(--primary); color: var(--primary); font-weight: 600; }
-.chip.on.neg { background: var(--danger-muted); border-color: var(--danger); color: var(--danger); }
-.chip-group-label { font-size: 10px; color: var(--text-3); width: 100%; padding-top: 4px; }
+html { font-size: 13px; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5;
+}
 
-/* CHECKBOXES */
-.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.chk-label { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-2); cursor: pointer; padding: 4px 6px; border-radius: 4px; transition: background .15s; }
-.chk-label:hover { background: var(--surface-3); color: var(--text); }
-.chk-label input { accent-color: var(--primary); width: 13px; height: 13px; cursor: pointer; }
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--s4); border-radius: 2px; }
 
-/* RATIO */
-.ratio-row { display: flex; gap: 6px; }
-.ratio-btn { flex: 1; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r); padding: 6px 4px; cursor: pointer; font-size: 11px; color: var(--text-2); transition: all .15s; }
-.ratio-btn:hover { border-color: var(--border-2); color: var(--text); }
-.ratio-btn input { display: none; }
-.ratio-btn.active { background: var(--primary-muted); border-color: var(--primary); color: var(--primary); font-weight: 600; }
+/* ── HEADER ── */
+.hdr {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,8,16,.8);
+  backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  gap: 20px;
+  flex-shrink: 0;
+}
+.logo {
+  font-size: 15px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--ind) 0%, var(--pur) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -.4px;
+  white-space: nowrap;
+}
+.hdr-div { width: 1px; height: 18px; background: var(--border2); }
+.seg {
+  display: flex;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+.seg-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 4px 11px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  color: var(--t3);
+  background: transparent;
+  transition: all .18s;
+  white-space: nowrap;
+}
+.seg-btn:hover { color: var(--t2); background: var(--s3); }
+.seg-btn.on { background: var(--s4); color: var(--t1); }
+.seg-btn.on.fmt { background: var(--ind-bg); color: var(--ind); border: 1px solid var(--ind-border); }
+.hdr-space { flex: 1; }
+.hdr-stat { font-size: 11px; color: var(--t4); }
+.btn-gen {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 18px;
+  background: linear-gradient(135deg, var(--ind2), #7c3aed);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.btn-gen:hover { opacity: .88; transform: translateY(-1px); }
+.btn-gen:active { transform: translateY(0); }
+.btn-gen:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn-gen .spinner {
+  width: 12px; height: 12px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+  display: none;
+}
+.btn-gen.loading .spinner { display: block; }
+.btn-gen.loading .btn-label { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* CONFLICT WARNING */
-.conflict { background: var(--warning-muted); border: 1px solid var(--warning); border-radius: var(--r); padding: 8px 10px; font-size: 11px; color: var(--warning); display: none; }
-.conflict.show { display: flex; align-items: center; gap: 6px; }
+/* ── LAYOUT ── */
+.layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.pane-l {
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border);
+}
+.pane-r {
+  overflow-y: auto;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
 
-/* QUALITY SCORE */
-.qs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.qs-item { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r); padding: 8px 10px; }
-.qs-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-.qs-name { font-size: 10px; color: var(--text-3); }
-.qs-val { font-size: 12px; font-weight: 700; color: var(--text); }
-.qs-bar-bg { background: var(--surface-3); border-radius: 2px; height: 3px; }
-.qs-bar { height: 3px; border-radius: 2px; background: var(--primary); transition: width .3s ease; }
-.qs-total { background: linear-gradient(135deg, var(--primary-muted), var(--accent-muted)); border: 1px solid var(--primary); border-radius: var(--r); padding: 10px; margin-top: 8px; display: flex; align-items: center; gap: 10px; }
-.qs-total-num { font-size: 24px; font-weight: 800; color: var(--primary); }
-.qs-total-label { font-size: 11px; color: var(--text-2); }
-.qs-total-grade { font-size: 13px; font-weight: 700; color: var(--accent); }
-.qs-tips { margin-top: 8px; }
-.qs-tip { font-size: 10px; color: var(--text-3); padding: 3px 0; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 5px; }
-.qs-tip:first-child { border-top: none; }
-.qs-tip .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--warning); flex-shrink: 0; margin-top: 4px; }
+/* ── BLOCKS (left) ── */
+.blk {
+  background: var(--s1);
+  padding: 16px 18px;
+}
+.blk-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--t4);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin-bottom: 10px;
+}
 
-/* RIGHT PANEL */
-.r-top { padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-.mode-tabs, .fmt-tabs { display: flex; gap: 4px; }
-.mode-btn, .fmt-btn { font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: var(--r); border: 1px solid transparent; cursor: pointer; transition: all .15s; color: var(--text-2); background: transparent; }
-.mode-btn:hover, .fmt-btn:hover { background: var(--surface-3); color: var(--text); }
-.mode-btn.active { background: var(--primary-muted); border-color: var(--primary); color: var(--primary); }
-.fmt-btn.active { background: var(--accent-muted); border-color: var(--accent); color: var(--accent); }
-.r-top-sep { width: 1px; height: 20px; background: var(--border); }
-.r-top-spacer { flex: 1; }
-.r-counter { font-size: 10px; color: var(--text-3); }
+/* ── TYPE ── */
+.type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.type-card {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all .18s;
+}
+.type-card:hover { border-color: var(--border2); background: var(--s3); }
+.type-card.on { background: var(--ind-bg); border-color: var(--ind-border); }
+.type-card .tc-icon { font-size: 18px; margin-bottom: 4px; }
+.type-card .tc-name { font-size: 12px; font-weight: 600; color: var(--t2); }
+.type-card .tc-sub { font-size: 10px; color: var(--t4); margin-top: 1px; }
+.type-card.on .tc-name { color: var(--ind); }
 
-.r-body { flex: 1; padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+/* ── FIELDS ── */
+.field { margin-bottom: 8px; }
+.field-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.field-label { font-size: 11px; font-weight: 600; color: var(--t2); }
+.field-hint { font-size: 10px; color: var(--t4); }
+.field input, .field textarea {
+  width: 100%;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--t1);
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  padding: 8px 11px;
+  outline: none;
+  resize: none;
+  transition: border-color .15s, background .15s;
+}
+.field input:focus, .field textarea:focus { border-color: var(--ind-border); background: var(--s3); }
+.field input::placeholder, .field textarea::placeholder { color: var(--t4); }
+.field textarea { min-height: 56px; line-height: 1.5; }
+.field-required { color: var(--ind); margin-left: 2px; }
 
-/* PROMPT OUTPUT */
-.prompt-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 12px; line-height: 1.7; min-height: 180px; white-space: pre-wrap; word-break: break-word; }
-.prompt-box .hl-section { color: var(--text-3); font-weight: 600; }
-.prompt-box .hl-key { color: var(--primary); font-weight: 700; }
-.prompt-box .hl-tech { color: var(--success); }
-.prompt-box .hl-neg { color: var(--danger); }
-.prompt-box .hl-chip { color: var(--accent); }
-.prompt-box .hl-plain { color: var(--text); }
-.prompt-box .hl-comment { color: var(--text-3); font-style: italic; }
-.prompt-box.loading { color: var(--text-3); font-style: italic; }
+/* ── CHIPS ── */
+.chip-wrap { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip-sec-label { font-size: 10px; color: var(--t4); width: 100%; margin-top: 4px; margin-bottom: 1px; }
+.chip {
+  font-size: 11px;
+  padding: 3px 10px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  color: var(--t3);
+  transition: all .15s;
+  white-space: nowrap;
+  user-select: none;
+}
+.chip:hover { color: var(--t2); border-color: var(--border2); }
+.chip.on { background: var(--ind-bg); border-color: var(--ind-border); color: var(--ind); font-weight: 500; }
+.chip.neg.on { background: var(--red-bg); border-color: rgba(248,113,113,.3); color: var(--red); }
 
-/* ACTIONS */
-.action-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.btn { font-size: 12px; font-weight: 600; padding: 7px 14px; border-radius: var(--r); border: 1px solid; cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; }
-.btn:disabled { opacity: .5; cursor: not-allowed; }
-.btn-primary { background: var(--primary); border-color: var(--primary); color: #fff; }
-.btn-primary:hover:not(:disabled) { background: #388bfd; }
-.btn-ghost { background: transparent; border-color: var(--border); color: var(--text-2); }
-.btn-ghost:hover:not(:disabled) { border-color: var(--border-2); color: var(--text); background: var(--surface-3); }
-.btn-success { background: var(--success-muted); border-color: var(--success); color: var(--success); }
-.btn-success:hover:not(:disabled) { background: rgba(63,185,80,.2); }
-.btn-spacer { flex: 1; }
+/* ── TOGGLES (tech) ── */
+.toggle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.tgl {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 8px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+.tgl:hover { border-color: var(--border2); }
+.tgl.on { background: var(--grn-bg); border-color: rgba(52,211,153,.25); }
+.tgl input { display: none; }
+.tgl-box {
+  width: 14px; height: 14px;
+  border: 1.5px solid var(--t4);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.tgl.on .tgl-box { background: var(--grn); border-color: var(--grn); }
+.tgl-check { width: 8px; height: 8px; display: none; }
+.tgl.on .tgl-check { display: block; fill: none; stroke: #000; stroke-width: 2; }
+.tgl-text { font-size: 11px; color: var(--t3); transition: color .15s; }
+.tgl.on .tgl-text { color: var(--grn); font-weight: 500; }
 
-/* VARIATIONS */
+/* ── RATIO ── */
+.ratio-row { display: flex; gap: 5px; }
+.ratio-opt {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 6px 2px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--t3);
+  transition: all .15s;
+  user-select: none;
+}
+.ratio-opt:hover { border-color: var(--border2); color: var(--t2); }
+.ratio-opt.on { background: var(--ind-bg); border-color: var(--ind-border); color: var(--ind); font-weight: 600; }
+.ratio-opt input { display: none; }
+
+/* ── QUALITY ── */
+.qs-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.qs-num {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--ind), var(--pur));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  min-width: 48px;
+}
+.qs-info { flex: 1; }
+.qs-grade { font-size: 13px; font-weight: 700; color: var(--t1); }
+.qs-sub { font-size: 10px; color: var(--t4); margin-top: 1px; }
+.qs-bars { display: flex; flex-direction: column; gap: 5px; }
+.qs-bar-row { display: flex; align-items: center; gap: 8px; }
+.qs-bar-label { font-size: 10px; color: var(--t4); width: 36px; flex-shrink: 0; }
+.qs-bar-track { flex: 1; height: 3px; background: var(--s4); border-radius: 2px; overflow: hidden; }
+.qs-bar-fill { height: 100%; border-radius: 2px; transition: width .4s ease; }
+.qs-bar-val { font-size: 10px; color: var(--t4); width: 22px; text-align: right; flex-shrink: 0; }
+.qs-tip {
+  font-size: 10.5px;
+  color: var(--ylw);
+  background: var(--ylw-bg);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-top: 4px;
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+}
+.qs-tip::before { content: "→"; flex-shrink: 0; }
+
+/* ── PRESETS ── */
+.preset-list { display: flex; flex-wrap: wrap; gap: 5px; }
+.preset-pill {
+  font-size: 11px;
+  padding: 4px 11px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all .15s;
+  display: flex; align-items: center; gap: 5px;
+  user-select: none;
+}
+.preset-pill.builtin {
+  background: var(--s2);
+  border: 1px dashed var(--border2);
+  color: var(--t3);
+}
+.preset-pill.builtin:hover { color: var(--t1); border-color: var(--t3); }
+.preset-pill.saved {
+  background: var(--pur-bg);
+  border: 1px solid rgba(192,132,252,.3);
+  color: var(--pur);
+}
+.preset-pill .del { color: var(--t4); font-size: 10px; line-height: 1; margin-left: 2px; }
+.preset-pill .del:hover { color: var(--red); }
+
+/* ── RIGHT PANE ── */
+.r-body { padding: 24px; display: flex; flex-direction: column; gap: 20px; flex: 1; }
+.r-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--t4);
+  text-transform: uppercase;
+  letter-spacing: .7px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.r-section-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+/* ── PROMPT OUTPUT ── */
+.output-wrap {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  overflow: hidden;
+}
+.output-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--s2);
+  border-bottom: 1px solid var(--border);
+}
+.output-dot { width: 8px; height: 8px; border-radius: 50%; }
+.output-bar-title { font-size: 11px; font-weight: 500; color: var(--t3); flex: 1; }
+.output-stat { font-size: 10px; color: var(--t4); }
+.output-body {
+  padding: 18px 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.75;
+  min-height: 160px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--t2);
+}
+.output-body.empty { color: var(--t4); font-style: italic; font-family: 'Inter', sans-serif; font-size: 13px; }
+.hl-head { color: #94a3b8; font-weight: 600; }
+.hl-key { color: #818cf8; font-weight: 700; }
+.hl-val { color: #e2e8f0; }
+.hl-tech { color: #34d399; }
+.hl-neg { color: #f87171; }
+.hl-flag { color: #c084fc; }
+.hl-sep { color: #334155; }
+.hl-comment { color: #475569; font-style: italic; }
+
+/* ── ACTION ROW ── */
+.act-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  transition: all .15s;
+  background: var(--s2);
+  color: var(--t2);
+  display: flex; align-items: center; gap: 5px;
+}
+.btn:hover { background: var(--s3); color: var(--t1); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--ind2), #7c3aed);
+  border-color: transparent;
+  color: #fff;
+}
+.btn-primary:hover { opacity: .88; background: linear-gradient(135deg, var(--ind2), #7c3aed); color: #fff; }
+.btn-space { flex: 1; }
+
+/* ── VARIATIONS ── */
 .var-tabs { display: flex; gap: 4px; margin-bottom: 10px; }
-.var-btn { font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; color: var(--text-3); background: transparent; transition: all .15s; }
-.var-btn:hover { color: var(--text-2); border-color: var(--border-2); }
-.var-btn.active { background: var(--accent-muted); border-color: var(--accent); color: var(--accent); }
+.var-tab {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  color: var(--t4);
+  background: transparent;
+  transition: all .15s;
+}
+.var-tab:hover { color: var(--t2); border-color: var(--border2); }
+.var-tab.on { background: var(--pur-bg); border-color: rgba(192,132,252,.35); color: var(--pur); }
 
-/* PRESETS */
-.preset-list { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
-.preset-item { font-size: 11px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; cursor: pointer; color: var(--text-2); transition: all .15s; display: flex; align-items: center; gap: 5px; }
-.preset-item:hover { border-color: var(--border-2); color: var(--text); }
-.preset-item .del { color: var(--text-3); font-size: 10px; margin-left: 2px; }
-.preset-item .del:hover { color: var(--danger); }
-.preset-item.builtin { border-style: dashed; }
+/* ── CONFLICT ── */
+.conflict {
+  background: var(--ylw-bg);
+  border: 1px solid rgba(251,191,36,.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--ylw);
+  display: none;
+  align-items: center;
+  gap: 6px;
+}
+.conflict.show { display: flex; }
 
-/* FOOTER / HISTORY */
-.ftr { background: var(--surface); border-top: 1px solid var(--border); padding: 0 20px; height: 42px; display: flex; align-items: center; gap: 8px; flex-shrink: 0; overflow: hidden; }
-.ftr-label { font-size: 10px; font-weight: 600; color: var(--text-3); white-space: nowrap; }
-.ftr-hist { display: flex; gap: 6px; overflow-x: auto; flex: 1; scrollbar-width: none; }
+/* ── FOOTER / HISTORY ── */
+.ftr {
+  height: 44px;
+  background: var(--s1);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.ftr-label { font-size: 10px; font-weight: 600; color: var(--t4); white-space: nowrap; text-transform: uppercase; letter-spacing: .5px; }
+.ftr-hist { display: flex; gap: 6px; flex: 1; overflow-x: auto; scrollbar-width: none; }
 .ftr-hist::-webkit-scrollbar { display: none; }
-.hist-item { font-size: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; cursor: pointer; color: var(--text-3); white-space: nowrap; transition: all .15s; flex-shrink: 0; max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
-.hist-item:hover { border-color: var(--border-2); color: var(--text-2); }
-.ftr-clear { font-size: 10px; color: var(--text-3); cursor: pointer; padding: 2px 6px; border-radius: 4px; border: none; background: none; }
-.ftr-clear:hover { color: var(--danger); }
+.hist-item {
+  font-size: 10.5px;
+  color: var(--t4);
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s;
+  flex-shrink: 0;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hist-item:hover { color: var(--t2); border-color: var(--border2); }
+.ftr-clear { font-size: 10px; color: var(--t4); border: none; background: none; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: color .15s; }
+.ftr-clear:hover { color: var(--red); }
 
-/* TOAST */
-.toast { position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--surface-3); border: 1px solid var(--border-2); color: var(--text); font-size: 12px; padding: 8px 16px; border-radius: 20px; opacity: 0; transition: all .25s; pointer-events: none; z-index: 100; white-space: nowrap; }
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: var(--s4);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--t1);
+  opacity: 0;
+  transition: all .22s;
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+}
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 200; }
-.modal-overlay.show { display: flex; }
-.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; width: 360px; }
-.modal-title { font-size: 14px; font-weight: 700; margin-bottom: 14px; }
-.modal-input { width: 100%; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); font-size: 12px; padding: 8px 10px; outline: none; margin-bottom: 12px; }
-.modal-input:focus { border-color: var(--primary); }
-.modal-row { display: flex; gap: 8px; justify-content: flex-end; }
-
-/* scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-@media (max-width: 900px) {
-  .main { grid-template-columns: 1fr; }
-  .panel-l { max-height: 60vh; }
+/* ── MODAL ── */
+.modal-bg {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.7);
+  backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center;
+  z-index: 200;
 }
+.modal-bg.show { display: flex; }
+.modal {
+  background: var(--s2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r2);
+  padding: 24px;
+  width: 340px;
+}
+.modal-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+.modal-input {
+  width: 100%;
+  background: var(--s3);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  color: var(--t1);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  padding: 9px 12px;
+  outline: none;
+  margin-bottom: 14px;
+}
+.modal-input:focus { border-color: var(--ind-border); }
+.modal-row { display: flex; gap: 8px; justify-content: flex-end; }
 </style>
 </head>
 <body>
 
 <header class="hdr">
-  <div class="hdr-logo">PNG Prompt <span>Builder</span></div>
-  <div class="hdr-badge">PRO</div>
-  <div class="hdr-spacer"></div>
-  <span class="hdr-link" id="btnSavePreset">프리셋 저장</span>
-  <span class="hdr-link" id="btnReset">초기화</span>
+  <div class="logo">AI Prompt Studio</div>
+  <div class="hdr-div"></div>
+  <div class="seg" id="modeSeg">
+    <button class="seg-btn on" data-mode="natural">Natural</button>
+    <button class="seg-btn" data-mode="structured">Structured</button>
+    <button class="seg-btn" data-mode="expert">Expert</button>
+  </div>
+  <div class="hdr-div"></div>
+  <div class="seg" id="fmtSeg">
+    <button class="seg-btn fmt on" data-fmt="gpt">GPT Image</button>
+    <button class="seg-btn fmt" data-fmt="mj">Midjourney</button>
+    <button class="seg-btn fmt" data-fmt="sd">Stable Diffusion</button>
+    <button class="seg-btn fmt" data-fmt="debug">Debug</button>
+  </div>
+  <div class="hdr-space"></div>
+  <div class="hdr-stat" id="statEl">—</div>
+  <button class="btn-gen" id="btnGen">
+    <div class="spinner"></div>
+    <span class="btn-label">프롬프트 생성</span>
+  </button>
 </header>
 
-<div class="main">
-  <!-- LEFT PANEL -->
-  <aside class="panel-l">
+<div class="layout">
+
+  <!-- ══ LEFT PANE ══ -->
+  <aside class="pane-l">
 
     <!-- TYPE -->
-    <div class="sec">
-      <div class="sec-title">디자인 유형</div>
-      <div class="type-tabs" id="typeTabs">
-        <div class="type-tab active" data-type="인쇄용 소스 디자인">인쇄용 소스</div>
-        <div class="type-tab" data-type="캐릭터 디자인">캐릭터</div>
-        <div class="type-tab" data-type="아이콘 디자인">아이콘</div>
-        <div class="type-tab" data-type="오브젝트 디자인">오브젝트</div>
+    <div class="blk">
+      <div class="blk-title">디자인 유형</div>
+      <div class="type-grid" id="typeGrid">
+        <div class="type-card on" data-type="인쇄용 소스 디자인">
+          <div class="tc-icon">🖨</div>
+          <div class="tc-name">인쇄용 소스</div>
+          <div class="tc-sub">Print asset</div>
+        </div>
+        <div class="type-card" data-type="캐릭터 디자인">
+          <div class="tc-icon">🎭</div>
+          <div class="tc-name">캐릭터</div>
+          <div class="tc-sub">Mascot / Character</div>
+        </div>
+        <div class="type-card" data-type="아이콘 디자인">
+          <div class="tc-icon">✦</div>
+          <div class="tc-name">아이콘</div>
+          <div class="tc-sub">Icon set</div>
+        </div>
+        <div class="type-card" data-type="오브젝트 디자인">
+          <div class="tc-icon">◎</div>
+          <div class="tc-name">오브젝트</div>
+          <div class="tc-sub">Graphic object</div>
+        </div>
       </div>
     </div>
 
     <!-- PRESETS -->
-    <div class="sec">
-      <div class="sec-title">프리셋 <span class="badge" id="presetCount">0</span></div>
+    <div class="blk">
+      <div class="blk-title" style="display:flex;align-items:center;justify-content:space-between">
+        <span>프리셋</span>
+        <span id="btnSavePreset" style="font-size:10px;color:var(--t4);cursor:pointer;text-decoration:underline;text-underline-offset:2px">+ 현재 저장</span>
+      </div>
       <div class="preset-list" id="presetList"></div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap" id="builtinPresets"></div>
     </div>
 
     <!-- FIELDS -->
-    <div class="sec">
-      <div class="sec-title">입력 필드</div>
+    <div class="blk">
+      <div class="blk-title">입력 정보</div>
       <div class="field">
-        <div class="field-row"><span class="field-label">주제 *</span><span class="field-hint">무엇을 그릴까요?</span></div>
-        <textarea id="subject" rows="2" placeholder="예: 딸기 체험농장 귀여운 마스코트 캐릭터"></textarea>
+        <div class="field-hd">
+          <span class="field-label">주제<span class="field-required">*</span></span>
+          <span class="field-hint">무엇을 그릴까요?</span>
+        </div>
+        <textarea id="subject" rows="2" placeholder="예: 딸기 체험농장 귀여운 마스코트 캐릭터, 손을 흔드는 포즈"></textarea>
       </div>
       <div class="field">
-        <div class="field-row"><span class="field-label">아트 스타일</span></div>
-        <textarea id="style" rows="2" placeholder="예: 말랑한 소프트 3D 광고 캐릭터, 따뜻하고 친근한 느낌"></textarea>
+        <div class="field-hd"><span class="field-label">아트 스타일</span></div>
+        <textarea id="style" rows="2" placeholder="예: 말랑한 소프트 3D, 따뜻하고 친근한 광고 캐릭터 느낌"></textarea>
       </div>
       <div class="field">
-        <div class="field-row"><span class="field-label">색감</span></div>
-        <input type="text" id="colors" placeholder="예: 딸기 레드, 잎사귀 그린, 크림톤">
+        <div class="field-hd"><span class="field-label">색감</span></div>
+        <input type="text" id="colors" placeholder="예: 딸기 레드, 잎사귀 그린, 크림 화이트">
       </div>
       <div class="field">
-        <div class="field-row"><span class="field-label">구도 / 포즈</span></div>
-        <input type="text" id="composition" placeholder="예: 정면, 손을 흔드는 포즈, 중앙 배치">
-      </div>
-      <div class="field">
-        <div class="field-row"><span class="field-label">분위기 / 무드</span></div>
+        <div class="field-hd"><span class="field-label">분위기 / 무드</span></div>
         <input type="text" id="mood" placeholder="예: 밝고 경쾌한, 어린이 친화적, 상업적">
       </div>
       <div class="field">
-        <div class="field-row"><span class="field-label">추가 요청</span></div>
-        <textarea id="extra" rows="2" placeholder="예: 가방을 들고 있음, 로고 공간 좌측 하단 여백"></textarea>
+        <div class="field-hd"><span class="field-label">추가 요청</span></div>
+        <textarea id="extra" rows="2" placeholder="예: 가방을 들고 있음, 좌측 하단 여백 확보"></textarea>
       </div>
     </div>
 
-    <!-- TECH OPTIONS -->
-    <div class="sec">
-      <div class="sec-title">기술 요건</div>
-      <div class="checks">
-        <label class="chk-label"><input type="checkbox" id="transparent" checked> 투명 배경</label>
-        <label class="chk-label"><input type="checkbox" id="shadowless" checked> 그림자 없음</label>
-        <label class="chk-label"><input type="checkbox" id="noBranding" checked> 텍스트/워터마크 없음</label>
-        <label class="chk-label"><input type="checkbox" id="highres" checked> 고해상도</label>
-        <label class="chk-label"><input type="checkbox" id="clean" checked> 선명한 외곽선</label>
-        <label class="chk-label"><input type="checkbox" id="safeCrop" checked> 안전 여백</label>
-        <label class="chk-label"><input type="checkbox" id="original" checked> 오리지널 IP</label>
-        <label class="chk-label"><input type="checkbox" id="flatVector"> 플랫 벡터</label>
-        <label class="chk-label"><input type="checkbox" id="lineArt"> 라인 아트</label>
-        <label class="chk-label"><input type="checkbox" id="infographic"> 인포그래픽</label>
-        <label class="chk-label"><input type="checkbox" id="simpleColor"> 단순 채색</label>
-        <label class="chk-label"><input type="checkbox" id="removeSkyBg"> 배경 경치 없음</label>
-        <label class="chk-label"><input type="checkbox" id="publicPromo"> 공공기관 스타일</label>
+    <!-- TECH -->
+    <div class="blk">
+      <div class="blk-title">기술 요건</div>
+      <div class="toggle-grid" id="toggleGrid">
+        <label class="tgl on">
+          <input type="checkbox" id="o_transp" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">투명 배경</span>
+        </label>
+        <label class="tgl on">
+          <input type="checkbox" id="o_noshadow" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">그림자 없음</span>
+        </label>
+        <label class="tgl on">
+          <input type="checkbox" id="o_notext" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">텍스트 없음</span>
+        </label>
+        <label class="tgl on">
+          <input type="checkbox" id="o_highres" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">고해상도</span>
+        </label>
+        <label class="tgl on">
+          <input type="checkbox" id="o_clean" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">선명한 외곽</span>
+        </label>
+        <label class="tgl on">
+          <input type="checkbox" id="o_safe" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">안전 여백</span>
+        </label>
+        <label class="tgl on">
+          <input type="checkbox" id="o_original" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">오리지널 IP</span>
+        </label>
+        <label class="tgl">
+          <input type="checkbox" id="o_flat">
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">플랫 벡터</span>
+        </label>
+        <label class="tgl">
+          <input type="checkbox" id="o_line">
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">라인 아트</span>
+        </label>
+        <label class="tgl">
+          <input type="checkbox" id="o_simple">
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">단순 채색</span>
+        </label>
+      </div>
+      <div class="conflict" id="conflictWarn">
+        ⚠ 플랫 벡터와 3D 스타일이 동시에 선택되어 있습니다
       </div>
     </div>
 
-    <!-- ASPECT RATIO -->
-    <div class="sec">
-      <div class="sec-title">출력 비율</div>
+    <!-- RATIO -->
+    <div class="blk">
+      <div class="blk-title">출력 비율</div>
       <div class="ratio-row">
-        <label class="ratio-btn active" id="lbl-ratio11"><input type="radio" name="ratio" id="ratio11" checked> 1:1</label>
-        <label class="ratio-btn" id="lbl-ratio43"><input type="radio" name="ratio" id="ratio43"> 4:3</label>
-        <label class="ratio-btn" id="lbl-ratio34"><input type="radio" name="ratio" id="ratio34"> 3:4</label>
-        <label class="ratio-btn" id="lbl-ratio169"><input type="radio" name="ratio" id="ratio169"> 16:9</label>
-        <label class="ratio-btn" id="lbl-ratio916"><input type="radio" name="ratio" id="ratio916"> 9:16</label>
+        <label class="ratio-opt on" id="rl11"><input type="radio" name="ratio" id="r11" checked>1:1</label>
+        <label class="ratio-opt" id="rl43"><input type="radio" name="ratio" id="r43">4:3</label>
+        <label class="ratio-opt" id="rl34"><input type="radio" name="ratio" id="r34">3:4</label>
+        <label class="ratio-opt" id="rl169"><input type="radio" name="ratio" id="r169">16:9</label>
+        <label class="ratio-opt" id="rl916"><input type="radio" name="ratio" id="r916">9:16</label>
       </div>
     </div>
 
     <!-- CHIPS -->
-    <div class="sec">
-      <div class="sec-title">스타일 키워드</div>
-      <div class="chips" id="chips">
-        <div class="chip-group-label">구성 / 뷰</div>
+    <div class="blk">
+      <div class="blk-title">스타일 키워드</div>
+      <div class="chip-wrap" id="chipWrap">
+        <div class="chip-sec-label">구성</div>
         <span class="chip" data-k="centered composition">중앙 배치</span>
         <span class="chip" data-k="front-facing view">정면 구도</span>
-        <span class="chip" data-k="generous padding">여백 넉넉하게</span>
-        <span class="chip" data-k="elements visually separated">각 요소 분리</span>
-        <span class="chip" data-k="legible at small sizes">작은 크기 가독성</span>
-        <div class="chip-group-label">스타일</div>
-        <span class="chip" data-k="soft 3D rendered">3D 형태</span>
-        <span class="chip" data-k="flat vector style">평면 벡터</span>
+        <span class="chip" data-k="generous safe padding">안전 여백</span>
+        <span class="chip" data-k="full body visible">전신 표현</span>
+        <div class="chip-sec-label">스타일</div>
+        <span class="chip" data-k="soft 3D rendered with depth">소프트 3D</span>
+        <span class="chip" data-k="flat 2D vector">플랫 2D</span>
         <span class="chip" data-k="thick bold outlines">두꺼운 라인</span>
-        <span class="chip" data-k="rounded shapes">둥근 형태</span>
-        <span class="chip" data-k="easy to recolor">색 변경 용이</span>
-        <span class="chip" data-k="simple shapes easy to vectorize">벡터화 쉬운 형태</span>
-        <div class="chip-group-label">분위기</div>
-        <span class="chip" data-k="cute and friendly">귀엽고 친근하게</span>
-        <span class="chip" data-k="premium and clean">고급스럽고 깔끔하게</span>
-        <span class="chip" data-k="bright and cheerful">밝고 경쾌하게</span>
-        <span class="chip" data-k="commercial design aesthetic">상업 디자인 느낌</span>
-        <span class="chip" data-k="brand mascot style">브랜드 마스코트</span>
-        <span class="chip" data-k="three-dimensional depth">입체감 있게</span>
-        <div class="chip-group-label">기술 (제거)</div>
-        <span class="chip neg" data-k="no background elements">배경 없음</span>
+        <span class="chip" data-k="rounded friendly shapes">둥근 형태</span>
+        <span class="chip" data-k="pastel color palette">파스텔 톤</span>
+        <div class="chip-sec-label">분위기</div>
+        <span class="chip" data-k="cute and approachable">귀엽고 친근</span>
+        <span class="chip" data-k="premium clean minimalist">고급 미니멀</span>
+        <span class="chip" data-k="bright cheerful energetic">밝고 경쾌</span>
+        <span class="chip" data-k="commercial advertising style">광고 느낌</span>
+        <span class="chip" data-k="brand mascot character">브랜드 마스코트</span>
+        <div class="chip-sec-label">제거 조건</div>
+        <span class="chip neg" data-k="no background elements whatsoever">배경 없음</span>
         <span class="chip neg" data-k="no ground shadow">바닥 그림자 없음</span>
-        <span class="chip neg" data-k="no watermark">워터마크 없음</span>
-        <span class="chip neg" data-k="no logo">로고 없음</span>
-        <span class="chip neg" data-k="copyright-safe original">저작권 안전</span>
-        <span class="chip neg" data-k="no excessive decoration">과도한 장식 없음</span>
+        <span class="chip neg" data-k="no decorative elements">불필요한 장식 없음</span>
+        <span class="chip neg" data-k="no watermark no logo">워터마크·로고 없음</span>
       </div>
     </div>
 
-    <!-- QUALITY SCORE -->
-    <div class="sec">
-      <div class="sec-title">품질 점수 <span class="badge">실시간</span></div>
-      <div class="qs-grid">
-        <div class="qs-item"><div class="qs-top"><span class="qs-name">주제</span><span class="qs-val" id="qs-sub">0</span></div><div class="qs-bar-bg"><div class="qs-bar" id="qsb-sub" style="width:0%"></div></div></div>
-        <div class="qs-item"><div class="qs-top"><span class="qs-name">스타일</span><span class="qs-val" id="qs-sty">0</span></div><div class="qs-bar-bg"><div class="qs-bar" id="qsb-sty" style="width:0%"></div></div></div>
-        <div class="qs-item"><div class="qs-top"><span class="qs-name">기술요건</span><span class="qs-val" id="qs-tch">0</span></div><div class="qs-bar-bg"><div class="qs-bar" id="qsb-tch" style="width:0%"></div></div></div>
-        <div class="qs-item"><div class="qs-top"><span class="qs-name">색감</span><span class="qs-val" id="qs-col">0</span></div><div class="qs-bar-bg"><div class="qs-bar" id="qsb-col" style="width:0%"></div></div></div>
-        <div class="qs-item"><div class="qs-top"><span class="qs-name">구도</span><span class="qs-val" id="qs-cmp">0</span></div><div class="qs-bar-bg"><div class="qs-bar" id="qsb-cmp" style="width:0%"></div></div></div>
-        <div class="qs-item"><div class="qs-top"><span class="qs-name">무드</span><span class="qs-val" id="qs-mod">0</span></div><div class="qs-bar-bg"><div class="qs-bar" id="qsb-mod" style="width:0%"></div></div></div>
-      </div>
-      <div class="qs-total">
-        <div>
-          <div class="qs-total-num" id="qs-total">0</div>
-          <div class="qs-total-label">/ 100</div>
-        </div>
-        <div>
-          <div class="qs-total-grade" id="qs-grade">입력 대기중</div>
-          <div class="qs-total-label" id="qs-note">필드를 채워주세요</div>
+    <!-- QUALITY -->
+    <div class="blk">
+      <div class="blk-title">품질 점수</div>
+      <div class="qs-row">
+        <div class="qs-num" id="qsTotal">0</div>
+        <div class="qs-info">
+          <div class="qs-grade" id="qsGrade">대기중</div>
+          <div class="qs-sub">주제·스타일·기술·색감·무드</div>
         </div>
       </div>
-      <div class="qs-tips" id="qsTips"></div>
-    </div>
-
-    <!-- CONFLICT WARNING -->
-    <div class="sec" id="conflictSec" style="display:none">
-      <div class="conflict show" id="styleWarning">
-        ⚠ 플랫 벡터와 3D 형태가 동시에 선택되어 있습니다. 하나만 유지하면 결과물이 더 일관됩니다.
+      <div class="qs-bars">
+        <div class="qs-bar-row"><span class="qs-bar-label">주제</span><div class="qs-bar-track"><div class="qs-bar-fill" id="qb-sub" style="width:0%;background:var(--ind)"></div></div><span class="qs-bar-val" id="qv-sub">0</span></div>
+        <div class="qs-bar-row"><span class="qs-bar-label">스타일</span><div class="qs-bar-track"><div class="qs-bar-fill" id="qb-sty" style="width:0%;background:var(--ind)"></div></div><span class="qs-bar-val" id="qv-sty">0</span></div>
+        <div class="qs-bar-row"><span class="qs-bar-label">기술</span><div class="qs-bar-track"><div class="qs-bar-fill" id="qb-tch" style="width:0%;background:var(--ind)"></div></div><span class="qs-bar-val" id="qv-tch">0</span></div>
+        <div class="qs-bar-row"><span class="qs-bar-label">색감</span><div class="qs-bar-track"><div class="qs-bar-fill" id="qb-col" style="width:0%;background:var(--ind)"></div></div><span class="qs-bar-val" id="qv-col">0</span></div>
+        <div class="qs-bar-row"><span class="qs-bar-label">무드</span><div class="qs-bar-track"><div class="qs-bar-fill" id="qb-mod" style="width:0%;background:var(--ind)"></div></div><span class="qs-bar-val" id="qv-mod">0</span></div>
       </div>
+      <div id="qsTip"></div>
     </div>
 
   </aside>
 
-  <!-- RIGHT PANEL -->
-  <main class="panel-r">
-    <div class="r-top">
-      <div class="mode-tabs">
-        <button class="mode-btn active" data-mode="standard">Standard</button>
-        <button class="mode-btn" data-mode="professional">Professional</button>
-        <button class="mode-btn" data-mode="expert">Expert</button>
-      </div>
-      <div class="r-top-sep"></div>
-      <div class="fmt-tabs">
-        <button class="fmt-btn active" data-fmt="gpt">GPT Image</button>
-        <button class="fmt-btn" data-fmt="mj">Midjourney</button>
-        <button class="fmt-btn" data-fmt="sd">Stable Diffusion</button>
-        <button class="fmt-btn" data-fmt="raw">Raw / Debug</button>
-      </div>
-      <div class="r-top-spacer"></div>
-      <div class="r-counter" id="counter">0 chars · 0 tokens</div>
-    </div>
-
+  <!-- ══ RIGHT PANE ══ -->
+  <main class="pane-r">
     <div class="r-body">
 
-      <!-- MAIN PROMPT -->
+      <!-- MAIN OUTPUT -->
       <div>
-        <div class="sec-title" style="margin-bottom:8px">생성된 프롬프트</div>
-        <div class="prompt-box" id="promptBox">프롬프트를 생성하려면 주제를 입력하고 "프롬프트 생성" 버튼을 클릭하세요.</div>
+        <div class="r-section-title">생성된 프롬프트</div>
+        <div class="output-wrap">
+          <div class="output-bar">
+            <div class="output-dot" style="background:var(--red)"></div>
+            <div class="output-dot" style="background:var(--ylw)"></div>
+            <div class="output-dot" style="background:var(--grn)"></div>
+            <span class="output-bar-title" id="outTitle">GPT Image 2 — Natural mode</span>
+            <span class="output-stat" id="outStat"></span>
+          </div>
+          <div class="output-body empty" id="outBody">주제를 입력하고 상단의 "프롬프트 생성" 버튼을 클릭하세요.</div>
+        </div>
       </div>
 
       <!-- ACTIONS -->
-      <div class="action-row">
-        <button class="btn btn-primary" id="btnGenerate">▶ 프롬프트 생성</button>
-        <button class="btn btn-success" id="btnCopy">복사</button>
-        <button class="btn btn-ghost" id="btnDownload">TXT 저장</button>
-        <div class="btn-spacer"></div>
-        <button class="btn btn-ghost" id="btnCopyAll">4종 모두 복사</button>
+      <div class="act-row">
+        <button class="btn btn-primary" id="btnCopy">복사</button>
+        <button class="btn" id="btnDL">TXT 저장</button>
+        <div class="btn-space"></div>
+        <button class="btn" id="btnAll">전체 포맷 복사</button>
+        <button class="btn" id="btnReset">초기화</button>
       </div>
 
       <!-- VARIATIONS -->
       <div>
-        <div class="sec-title" style="margin-bottom:8px">변형 프롬프트 <span class="badge" style="font-size:9px;background:var(--accent-muted);color:var(--accent);border:1px solid var(--accent);padding:1px 5px;border-radius:20px">3가지</span></div>
+        <div class="r-section-title">변형 프롬프트</div>
         <div class="var-tabs">
-          <button class="var-btn active" data-var="0">주제 강조</button>
-          <button class="var-btn" data-var="1">스타일 강조</button>
-          <button class="var-btn" data-var="2">기술 강조</button>
+          <button class="var-tab on" data-vi="0">주제 강조</button>
+          <button class="var-tab" data-vi="1">스타일 강조</button>
+          <button class="var-tab" data-vi="2">기술 강조</button>
         </div>
-        <div class="prompt-box" id="varBox" style="min-height:100px;font-size:11px">변형 프롬프트는 생성 후 표시됩니다.</div>
-      </div>
-
-      <!-- 4 FORMAT SUMMARY -->
-      <div id="allFormats" style="display:none">
-        <div class="sec-title" style="margin-bottom:8px">전체 포맷 미리보기</div>
-        <div id="allFormatsContent"></div>
+        <div class="output-wrap">
+          <div class="output-body" id="varBody" style="min-height:100px;font-size:11.5px;color:var(--t3)">생성 후 표시됩니다.</div>
+        </div>
       </div>
 
     </div>
@@ -415,695 +805,568 @@ body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; back
 </div>
 
 <footer class="ftr">
-  <div class="ftr-label">히스토리</div>
+  <div class="ftr-label">History</div>
   <div class="ftr-hist" id="histBar"></div>
-  <button class="ftr-clear" id="btnClearHist">전체 삭제</button>
+  <button class="ftr-clear" id="btnClearHist">삭제</button>
 </footer>
 
 <div class="toast" id="toast"></div>
 
-<!-- PRESET SAVE MODAL -->
-<div class="modal-overlay" id="presetModal">
+<div class="modal-bg" id="modalBg">
   <div class="modal">
-    <div class="modal-title">프리셋 저장</div>
-    <input class="modal-input" id="presetNameInput" placeholder="프리셋 이름을 입력하세요" maxlength="30">
+    <div class="modal-title">프리셋 이름</div>
+    <input class="modal-input" id="modalInput" placeholder="프리셋 이름 입력" maxlength="30">
     <div class="modal-row">
-      <button class="btn btn-ghost" id="btnModalCancel">취소</button>
-      <button class="btn btn-primary" id="btnModalSave">저장</button>
+      <button class="btn" id="btnModalCancel">취소</button>
+      <button class="btn btn-primary" id="btnModalOk">저장</button>
     </div>
   </div>
 </div>
 
 <script>
-// ─────────────────────────────────────────────
+// ════════════════════════════════════
 // DICTIONARIES
-// ─────────────────────────────────────────────
+// ════════════════════════════════════
 const TYPE_EN = {
   "인쇄용 소스 디자인": "print-ready graphic design asset",
   "캐릭터 디자인":      "mascot character illustration",
-  "아이콘 디자인":      "icon set illustration",
+  "아이콘 디자인":      "icon illustration",
   "오브젝트 디자인":    "decorative graphic object",
 };
 
-const OPTION_EN = {
-  transparent:  "fully transparent background with clean alpha channel — no color fill, no gradient, no vignette",
-  shadowless:   "absolutely no drop shadow, no cast shadow, no ambient occlusion, no ground reflection, no inner glow whatsoever",
-  noBranding:   "no embedded text, no letters, no numbers, no watermarks, no logos, no signatures, no copyright symbols",
-  highres:      "high resolution output, print-ready quality, sharp fine details",
-  clean:        "crisp clean edges, well-defined outlines, suitable for clean cutout and compositing",
-  safeCrop:     "entire subject fully visible within frame, generous safe margins on all sides, nothing cropped",
-  original:     "completely original design, not based on any existing franchise, copyright-safe, no IP violation",
-  flatVector:   "flat 2D vector illustration style, no gradients, no depth shading",
-  lineArt:      "clean precise line art with uniform stroke weight, crisp outlines",
-  infographic:  "infographic-style layout, clear visual hierarchy",
-  simpleColor:  "simple flat coloring with limited palette, minimal color complexity",
-  removeSkyBg:  "no sky, no landscape, no background scenery, no environment context",
-  publicPromo:  "clean institutional public-friendly style appropriate for official promotion",
+const TECH_EN = {
+  o_transp:   "transparent background with clean alpha channel",
+  o_noshadow: "no drop shadow, no cast shadow, no ground shadow",
+  o_notext:   "no text, no watermark, no logo, no signature",
+  o_highres:  "high resolution, print-ready quality",
+  o_clean:    "crisp clean edges, sharp well-defined outlines",
+  o_safe:     "full subject visible, safe margins on all sides",
+  o_original: "original design, copyright-safe",
+  o_flat:     "flat 2D vector style, no shading or depth",
+  o_line:     "clean line art, uniform stroke weight",
+  o_simple:   "simple flat coloring, limited palette",
 };
 
-const RATIO_EN = {
-  ratio11:  "square format 1:1 aspect ratio",
-  ratio43:  "landscape 4:3 aspect ratio",
-  ratio34:  "portrait 3:4 aspect ratio",
-  ratio169: "wide landscape 16:9 aspect ratio",
-  ratio916: "tall portrait 9:16 aspect ratio",
-};
+const RATIO_EN  = { r11:"1:1", r43:"4:3", r34:"3:4", r169:"16:9", r916:"9:16" };
+const RATIO_MJ  = { r11:"--ar 1:1", r43:"--ar 4:3", r34:"--ar 3:4", r169:"--ar 16:9", r916:"--ar 9:16" };
 
-const MJ_RATIO = {
-  ratio11: "--ar 1:1", ratio43: "--ar 4:3", ratio34: "--ar 3:4",
-  ratio169: "--ar 16:9", ratio916: "--ar 9:16",
-};
-
-// ─────────────────────────────────────────────
+// ════════════════════════════════════
 // STATE
-// ─────────────────────────────────────────────
-const st = {
+// ════════════════════════════════════
+const ST = {
   type: "인쇄용 소스 디자인",
-  mode: "standard",
-  fmt: "gpt",
-  varIdx: 0,
-  prompts: { gpt: "", mj: "", sd: "", raw: "", vars: ["", "", ""] },
-  history: [],
-  presets: [],
+  mode: "natural",
+  fmt:  "gpt",
+  vi:   0,
+  out:  { gpt:"", mj:"", sd:"", debug:"", vars:["","",""] },
+  hist: [],
+  pre:  [],
   cache: {},
 };
 
-function $(id) { return document.getElementById(id); }
+const BUILTIN = [
+  { name:"귀여운 마스코트", d:{ type:"캐릭터 디자인", subject:"귀엽고 친근한 마스코트 캐릭터", style:"말랑한 소프트 3D 광고 캐릭터", colors:"파스텔 톤, 따뜻한 색감", mood:"밝고 경쾌한, 어린이 친화적", extra:"" } },
+  { name:"플랫 아이콘",    d:{ type:"아이콘 디자인",   subject:"비즈니스 관련 아이콘", style:"모던 플랫 벡터 라인 아이콘", colors:"단색, 제한된 팔레트", mood:"깔끔하고 전문적", extra:"일관된 선 굵기" } },
+  { name:"인쇄 소스",      d:{ type:"인쇄용 소스 디자인", subject:"장식용 그래픽 소스", style:"모던 일러스트레이션", colors:"브랜드 색상 기반", mood:"고급스럽고 정제된", extra:"" } },
+  { name:"귀여운 오브젝트",d:{ type:"오브젝트 디자인",  subject:"귀여운 음식 오브젝트", style:"치비 스타일 일러스트", colors:"밝고 채도 높은", mood:"귀엽고 식욕 돋는", extra:"" } },
+];
 
-// ─────────────────────────────────────────────
-// TRANSLATION
-// ─────────────────────────────────────────────
-async function translateKoToEn(text) {
-  if (!text || !text.trim()) return "";
-  const key = text.trim();
-  if (st.cache[key]) return st.cache[key];
-  try {
-    const url = "https://translate.googleapis.com/translate_a/single"
-      + "?client=gtx&sl=ko&tl=en&dt=t&q=" + encodeURIComponent(key);
-    const res = await fetch(url);
-    const data = await res.json();
-    const result = data[0].map(item => item[0]).join("").trim();
-    st.cache[key] = result;
-    return result;
-  } catch(e) {
-    return key;
+// ════════════════════════════════════
+// UTILS
+// ════════════════════════════════════
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+function toast(msg) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove("show"), 2000);
+}
+
+async function copyText(t) {
+  try { await navigator.clipboard.writeText(t); }
+  catch(e) {
+    const ta = document.createElement("textarea");
+    ta.value = t; document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); document.body.removeChild(ta);
   }
 }
 
-// ─────────────────────────────────────────────
-// PROMPT BUILDERS
-// ─────────────────────────────────────────────
-function buildGPT(en, mode) {
-  const typeEN = TYPE_EN[st.type] || st.type;
-  const tech = buildTechLines();
-  const chips = buildChipLines();
-  const ratio = buildRatioLine();
+// ════════════════════════════════════
+// TRANSLATION
+// ════════════════════════════════════
+async function tr(text) {
+  if (!text || !text.trim()) return "";
+  const k = text.trim();
+  if (ST.cache[k]) return ST.cache[k];
+  try {
+    const url = "https://translate.googleapis.com/translate_a/single"
+      + "?client=gtx&sl=ko&tl=en&dt=t&q=" + encodeURIComponent(k);
+    const r = await fetch(url);
+    const d = await r.json();
+    const result = d[0].map(x => x[0]).join("").trim();
+    ST.cache[k] = result;
+    return result;
+  } catch(e) { return k; }
+}
 
-  if (mode === "standard") {
-    let p = `Create a ${typeEN} illustration.\n\n`;
-    if (en.subject)     p += `The main subject is: ${en.subject}.\n`;
-    if (en.style)       p += `Art style: ${en.style}.\n`;
-    if (en.colors)      p += `Color palette: ${en.colors}.\n`;
-    if (en.composition) p += `Composition and pose: ${en.composition}.\n`;
-    if (en.mood)        p += `Overall mood and atmosphere: ${en.mood}.\n`;
-    if (en.extra)       p += `Additional requirements: ${en.extra}.\n`;
-    if (tech.length) {
-      p += `\nTechnical requirements: ${tech.join(", ")}.`;
-    }
-    if (chips.length) {
-      p += `\nStyle keywords: ${chips.join(", ")}.`;
-    }
-    if (ratio) p += `\nOutput: ${ratio}.`;
-    p += "\n\nDeliver as a clean, professional, print-ready commercial illustration asset.";
-    return p.trim();
+// ════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════
+function getCheckedTech() {
+  return Object.entries(TECH_EN).filter(([id]) => $(id) && $(id).checked).map(([,en]) => en);
+}
+function getChips() {
+  return [...document.querySelectorAll(".chip.on")].map(c => c.dataset.k);
+}
+function getRatioId() {
+  const r = document.querySelector('input[name="ratio"]:checked');
+  return r ? r.id : "r11";
+}
+
+// ════════════════════════════════════
+// PROMPT BUILDERS
+// ════════════════════════════════════
+function buildGPT(en, mode) {
+  const type = TYPE_EN[ST.type] || ST.type;
+  const tech = getCheckedTech();
+  const chips = getChips();
+  const ratio = RATIO_EN[getRatioId()];
+
+  if (mode === "natural") {
+    const parts = [];
+    if (en.subject) parts.push(en.subject);
+    else parts.push(`a ${type}`);
+    if (en.style) parts.push(`in the style of ${en.style}`);
+    if (en.colors) parts.push(`using ${en.colors} colors`);
+    if (en.mood) parts.push(`with a ${en.mood} feel`);
+    if (en.extra) parts.push(en.extra);
+
+    const techKey = [];
+    if ($("o_transp")?.checked) techKey.push("transparent background");
+    if ($("o_noshadow")?.checked) techKey.push("no shadows");
+    if ($("o_notext")?.checked) techKey.push("no text or watermarks");
+    if ($("o_clean")?.checked) techKey.push("clean crisp edges");
+    if ($("o_safe")?.checked) techKey.push("full subject in frame");
+    if ($("o_highres")?.checked) techKey.push("high resolution");
+    if ($("o_original")?.checked) techKey.push("original design");
+    if ($("o_flat")?.checked) techKey.push("flat vector style");
+    if ($("o_line")?.checked) techKey.push("line art style");
+
+    let out = `Create a ${type}: ${parts.join(", ")}.`;
+    if (techKey.length) out += ` ${techKey.join(", ")}.`;
+    if (chips.length) out += ` ${chips.join(", ")}.`;
+    if (ratio) out += ` Aspect ratio ${ratio}.`;
+    return out;
   }
 
-  if (mode === "professional") {
-    let p = `[TASK] Create a ${typeEN} illustration.\n\n`;
-    if (en.subject)     p += `[SUBJECT] ${en.subject}\n`;
-    if (en.style)       p += `[ART STYLE] ${en.style}\n`;
-    if (en.colors)      p += `[COLOR PALETTE] ${en.colors}\n`;
-    if (en.composition) p += `[COMPOSITION] ${en.composition}\n`;
-    if (en.mood)        p += `[MOOD] ${en.mood}\n`;
-    if (en.extra)       p += `[ADDITIONAL] ${en.extra}\n`;
-    if (tech.length) {
-      p += `\n[TECHNICAL REQUIREMENTS]\n`;
-      tech.forEach(t => p += `• ${t}\n`);
-    }
-    if (chips.length) {
-      p += `\n[STYLE KEYWORDS]\n${chips.join(", ")}\n`;
-    }
-    if (ratio) p += `\n[OUTPUT FORMAT] ${ratio}\n`;
-    p += "\n[DELIVERABLE] Clean, professional, print-ready commercial illustration asset.";
-    return p.trim();
+  if (mode === "structured") {
+    const lines = [`Create a ${type} illustration.`, ""];
+    if (en.subject)  lines.push(`Subject: ${en.subject}`);
+    if (en.style)    lines.push(`Art style: ${en.style}`);
+    if (en.colors)   lines.push(`Color palette: ${en.colors}`);
+    if (en.mood)     lines.push(`Mood: ${en.mood}`);
+    if (en.extra)    lines.push(`Additional: ${en.extra}`);
+    if (tech.length) { lines.push(""); lines.push("Technical:"); tech.forEach(t => lines.push(`- ${t}`)); }
+    if (chips.length) { lines.push(""); lines.push(`Keywords: ${chips.join(", ")}`); }
+    if (ratio) { lines.push(""); lines.push(`Output: ${ratio} aspect ratio`); }
+    return lines.join("\n");
   }
 
   if (mode === "expert") {
-    const sep = "━".repeat(50);
-    let p = `${sep}\nTASK\n${sep}\nCreate a ${typeEN} illustration for commercial print use.\n\n`;
-    p += `${sep}\nDESIGN SPECIFICATIONS\n${sep}\n`;
-    if (en.subject)     p += `SUBJECT:      ${en.subject}\n`;
-    if (en.style)       p += `ART STYLE:    ${en.style}\n`;
-    if (en.colors)      p += `COLOR:        ${en.colors}\n`;
-    if (en.composition) p += `COMPOSITION:  ${en.composition}\n`;
-    if (en.mood)        p += `MOOD:         ${en.mood}\n`;
-    if (en.extra)       p += `EXTRA:        ${en.extra}\n`;
-    if (tech.length) {
-      p += `\n${sep}\nTECHNICAL REQUIREMENTS\n${sep}\n`;
-      tech.forEach(t => p += `✓ ${t}\n`);
-    }
-    if (chips.length) {
-      p += `\n${sep}\nSTYLE KEYWORDS\n${sep}\n`;
-      p += chips.join(" · ") + "\n";
-    }
-    if (ratio) p += `\n${sep}\nOUTPUT\n${sep}\n${ratio}\n`;
-    p += `\n${sep}\nDELIVERABLE\n${sep}\nHigh-fidelity, production-ready, commercially safe illustration asset.`;
-    return p.trim();
+    const sep = "─".repeat(44);
+    const lines = [sep, `TASK  Create a ${type} for commercial print use.`, sep];
+    if (en.subject)  lines.push(`SUBJECT      ${en.subject}`);
+    if (en.style)    lines.push(`STYLE        ${en.style}`);
+    if (en.colors)   lines.push(`COLORS       ${en.colors}`);
+    if (en.mood)     lines.push(`MOOD         ${en.mood}`);
+    if (en.extra)    lines.push(`EXTRA        ${en.extra}`);
+    if (tech.length) { lines.push(sep); lines.push("REQUIREMENTS"); tech.forEach(t => lines.push(`  ✓ ${t}`)); }
+    if (chips.length){ lines.push(sep); lines.push(`KEYWORDS     ${chips.join(" · ")}`); }
+    if (ratio)       { lines.push(sep); lines.push(`OUTPUT       ${ratio} aspect ratio, PNG with alpha channel`); }
+    lines.push(sep);
+    return lines.join("\n");
   }
   return "";
 }
 
 function buildMJ(en) {
-  const typeEN = TYPE_EN[st.type] || st.type;
-  const parts = [];
-  if (en.subject) parts.push(en.subject);
-  if (en.style) parts.push(en.style);
+  const type = TYPE_EN[ST.type] || ST.type;
+  const parts = [en.subject || type];
+  if (en.style)  parts.push(en.style);
   if (en.colors) parts.push(en.colors);
-  if (en.composition) parts.push(en.composition);
-  if (en.mood) parts.push(en.mood);
-  if (en.extra) parts.push(en.extra);
-  parts.push(typeEN);
-
-  const negs = [];
-  if ($("transparent") && $("transparent").checked) negs.push("background");
-  if ($("shadowless") && $("shadowless").checked) negs.push("shadow", "drop shadow", "cast shadow");
-  if ($("noBranding") && $("noBranding").checked) negs.push("text", "watermark", "logo");
-  negs.push("ugly", "deformed", "blurry", "low quality");
-
-  const ratio = document.querySelector('input[name="ratio"]:checked');
-  const arFlag = ratio ? (MJ_RATIO[ratio.id] || "--ar 1:1") : "--ar 1:1";
-
-  const chips = buildChipLines().slice(0, 8);
+  if (en.mood)   parts.push(en.mood);
+  if (en.extra)  parts.push(en.extra);
+  parts.push(type);
+  const chips = getChips().slice(0, 6);
   if (chips.length) parts.push(...chips);
 
-  return `${parts.join(", ")} ${arFlag} --v 6.1 --style raw --q 2${negs.length ? " --no " + negs.join(", ") : ""}`;
+  const noList = ["background"];
+  if ($("o_noshadow")?.checked) noList.push("shadow", "drop shadow");
+  if ($("o_notext")?.checked)   noList.push("text", "watermark", "logo");
+  noList.push("blurry", "low quality", "deformed");
+
+  const ar = RATIO_MJ[getRatioId()] || "--ar 1:1";
+  return `${parts.join(", ")} ${ar} --v 6.1 --style raw --q 2 --no ${noList.join(", ")}`;
 }
 
 function buildSD(en) {
-  const typeEN = TYPE_EN[st.type] || st.type;
-  const pos = [];
-  if (en.subject) pos.push(en.subject);
-  if (en.style) pos.push(en.style);
-  if (en.colors) pos.push(en.colors);
-  if (en.composition) pos.push(en.composition);
-  if (en.mood) pos.push(en.mood);
-  if (en.extra) pos.push(en.extra);
-  pos.push(typeEN);
-  pos.push("masterpiece", "best quality", "ultra-detailed", "8k");
+  const type = TYPE_EN[ST.type] || ST.type;
+  const pos = [en.subject || type, en.style, en.colors, en.mood, en.extra, type, "masterpiece", "best quality", "8k"]
+    .filter(Boolean);
+  const techShort = getCheckedTech().slice(0, 6);
+  pos.push(...techShort);
+  pos.push(...getChips().slice(0, 5));
 
-  const tech = buildTechLines();
-  pos.push(...tech.slice(0, 6));
+  const neg = ["blurry", "low quality", "worst quality", "jpeg artifacts", "deformed", "ugly", "duplicate"];
+  if ($("o_transp")?.checked)   neg.push("background", "colored background");
+  if ($("o_noshadow")?.checked) neg.push("shadow", "drop shadow");
+  if ($("o_notext")?.checked)   neg.push("text", "watermark", "logo", "signature");
 
-  const chips = buildChipLines();
-  pos.push(...chips.slice(0, 6));
-
-  const neg = ["blurry", "low quality", "worst quality", "jpeg artifacts", "distorted"];
-  if ($("transparent") && $("transparent").checked) neg.push("background", "colored background");
-  if ($("shadowless") && $("shadowless").checked) neg.push("shadow", "drop shadow");
-  if ($("noBranding") && $("noBranding").checked) neg.push("text", "watermark", "logo", "signature");
-  neg.push("extra limbs", "deformed", "ugly", "duplicate");
-
-  return `POSITIVE:\n${pos.join(", ")}\n\nNEGATIVE:\n${neg.join(", ")}`;
+  return `POSITIVE:\n${pos.filter(Boolean).join(", ")}\n\nNEGATIVE:\n${neg.join(", ")}`;
 }
 
-function buildRaw(en) {
-  const tech = buildTechLines();
-  const chips = buildChipLines();
+function buildDebug(en) {
   const ratio = document.querySelector('input[name="ratio"]:checked');
   const lines = [
-    `# PNG Prompt Builder — Raw Debug Output`,
-    `# Generated: ${new Date().toLocaleString("ko-KR")}`,
-    ``,
-    `type:        ${st.type}`,
-    `type_en:     ${TYPE_EN[st.type] || "(custom)"}`,
-    `mode:        ${st.mode}`,
-    `ratio:       ${ratio ? ratio.id : "none"}`,
-    ``,
+    "# Debug / Raw Output",
+    `# ${new Date().toLocaleString("ko-KR")}`,
+    "",
+    `type:        ${ST.type}`,
+    `type_en:     ${TYPE_EN[ST.type]}`,
+    `mode:        ${ST.mode}`,
+    `fmt:         ${ST.fmt}`,
+    `ratio:       ${ratio?.id || "none"}`,
+    `cache_size:  ${Object.keys(ST.cache).length}`,
+    "",
     `subject:     ${$("subject").value.trim() || "(empty)"}`,
     `subject_en:  ${en.subject || "(empty)"}`,
     `style:       ${$("style").value.trim() || "(empty)"}`,
     `style_en:    ${en.style || "(empty)"}`,
     `colors:      ${$("colors").value.trim() || "(empty)"}`,
     `colors_en:   ${en.colors || "(empty)"}`,
-    `composition: ${$("composition").value.trim() || "(empty)"}`,
-    `comp_en:     ${en.composition || "(empty)"}`,
     `mood:        ${$("mood").value.trim() || "(empty)"}`,
     `mood_en:     ${en.mood || "(empty)"}`,
     `extra:       ${$("extra").value.trim() || "(empty)"}`,
     `extra_en:    ${en.extra || "(empty)"}`,
-    ``,
-    `tech_flags:`,
-    ...tech.map(t => `  - ${t}`),
-    ``,
-    `chips:`,
-    ...chips.map(c => `  - ${c}`),
-    ``,
-    `quality_score: ${calcQuality().total}`,
-    `cache_size:    ${Object.keys(st.cache).length} entries`,
+    "",
+    "tech_on:",
+    ...getCheckedTech().map(t => `  - ${t}`),
+    "",
+    "chips_on:",
+    ...getChips().map(c => `  - ${c}`),
   ];
   return lines.join("\n");
 }
 
 function buildVariations(en) {
-  const typeEN = TYPE_EN[st.type] || st.type;
-  const tech = buildTechLines();
-  const chips = buildChipLines();
+  const type = TYPE_EN[ST.type] || ST.type;
+  const tech = getCheckedTech();
+  const chips = getChips();
 
-  const v0 = `[Subject-Focused Variation]\nCreate a ${typeEN} illustration that prominently features: ${en.subject || "(subject)"}.\nEmphasize the subject's unique characteristics and visual details.\nStyle context: ${en.style || "versatile commercial style"}. Colors: ${en.colors || "harmonious palette"}.\n${tech.length ? "\nCore technical requirements:\n" + tech.slice(0,5).map(t=>"• "+t).join("\n") : ""}\nDeliver as a professional print-ready asset.`;
+  const v0 = `[Subject-Focused]\nCreate a ${type} where the primary focus is: ${en.subject || "(subject)"}.\nMake the subject the undeniable hero of the composition.\nStyle: ${en.style || "clean commercial illustration"}. Colors: ${en.colors || "harmonious palette"}.\n${tech.slice(0,4).join(", ")}.`;
 
-  const v1 = `[Style-Focused Variation]\nCreate a ${typeEN} illustration in the style of: ${en.style || "clean commercial illustration"}.\nLet the art direction drive the visual language. Subject: ${en.subject || "(subject)"}.\nColor palette should reinforce the style: ${en.colors || "style-appropriate colors"}. Mood: ${en.mood || "professional"}.\n${chips.length ? "\nStyle keywords: " + chips.slice(0,8).join(", ") : ""}\nPrint-ready, commercially safe, no background.`;
+  const v1 = `[Style-Focused]\nProduce a ${type} in the distinct style of: ${en.style || "clean commercial illustration"}.\nLet the art direction define the image. Subject: ${en.subject || "(subject)"}.\nColor palette: ${en.colors || "style-appropriate"}. Mood: ${en.mood || "professional"}.\n${chips.slice(0,6).join(", ")}.`;
 
-  const v2 = `[Technical-Focused Variation]\nProduce a ${typeEN} illustration optimized for print production.\nSubject: ${en.subject || "(subject)"}.\n\nCritical technical constraints:\n${tech.map(t=>"✓ "+t).join("\n")}\n${chips.length ? "\nComplementary keywords: " + chips.join(", ") : ""}\nOutput must meet professional print production standards with clean alpha channel.`;
+  const v2 = `[Technical-Focused]\nGenerate a production-ready ${type} of: ${en.subject || "(subject)"}.\nAll technical requirements are mandatory:\n${tech.map(t => "• " + t).join("\n")}\n${chips.length ? "Keywords: " + chips.join(", ") : ""}`.trim();
 
   return [v0, v1, v2];
 }
 
-// ─────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────
-function buildTechLines() {
-  const lines = [];
-  for (const [id, en] of Object.entries(OPTION_EN)) {
-    if ($(id) && $(id).checked) lines.push(en);
-  }
-  const ratio = document.querySelector('input[name="ratio"]:checked');
-  if (ratio) lines.push(RATIO_EN[ratio.id]);
-  return lines;
-}
-
-function buildChipLines() {
-  return [...document.querySelectorAll(".chip.on")].map(c => c.dataset.k);
-}
-
-// ─────────────────────────────────────────────
-// QUALITY SCORE
-// ─────────────────────────────────────────────
-function calcQuality() {
-  const subText = $("subject").value.trim();
-  const styText = $("style").value.trim();
-  const colText = $("colors").value.trim();
-  const cmpText = $("composition").value.trim();
-  const modText = $("mood").value.trim();
-  const techCount = Object.keys(OPTION_EN).filter(id => $(id) && $(id).checked).length;
-  const chipCount = document.querySelectorAll(".chip.on").length;
-
-  const scoreField = (text, ideal) => {
-    if (!text) return 0;
-    const words = text.split(/\s+/).filter(Boolean).length;
-    return Math.min(100, Math.round((words / ideal) * 80 + (text.length > 5 ? 20 : 0)));
-  };
-
-  const sub = scoreField(subText, 6);
-  const sty = scoreField(styText, 5);
-  const col = scoreField(colText, 3);
-  const cmp = scoreField(cmpText, 3);
-  const mod = scoreField(modText, 3);
-  const tch = Math.min(100, Math.round(((techCount / 8) * 0.7 + (chipCount / 6) * 0.3) * 100));
-
-  const total = Math.round(sub * 0.25 + sty * 0.20 + tch * 0.20 + col * 0.15 + cmp * 0.10 + mod * 0.10);
-
-  return { sub, sty, tch, col, cmp, mod, total };
-}
-
-function updateQuality() {
-  const q = calcQuality();
-  const items = [
-    ["sub", q.sub], ["sty", q.sty], ["tch", q.tch],
-    ["col", q.col], ["cmp", q.cmp], ["mod", q.mod],
-  ];
-  items.forEach(([key, val]) => {
-    const el = $("qs-" + key);
-    const bar = $("qsb-" + key);
-    if (el) el.textContent = val;
-    if (bar) {
-      bar.style.width = val + "%";
-      bar.style.background = val >= 70 ? "var(--success)" : val >= 40 ? "var(--warning)" : "var(--danger)";
-    }
-  });
-  $("qs-total").textContent = q.total;
-  const grade = q.total >= 85 ? "Excellent" : q.total >= 70 ? "Good" : q.total >= 50 ? "Fair" : q.total >= 30 ? "Needs Work" : "입력 필요";
-  $("qs-grade").textContent = grade;
-  $("qs-grade").style.color = q.total >= 85 ? "var(--success)" : q.total >= 70 ? "var(--primary)" : q.total >= 50 ? "var(--warning)" : "var(--danger)";
-  $("qs-note").textContent = `총점 (주제 25% · 스타일 20% · 기술 20% · 색감 15% · 구도 10% · 무드 10%)`;
-
-  const tips = [];
-  if (q.sub < 50) tips.push("주제를 더 구체적으로 설명하면 품질이 높아집니다");
-  if (q.sty < 50) tips.push("아트 스타일을 추가하면 AI가 더 정확하게 생성합니다");
-  if (q.col < 40) tips.push("색감 정보를 입력하면 원하는 색상 결과를 얻을 수 있습니다");
-  if (q.tch < 60) tips.push("기술 요건 체크박스와 스타일 칩을 더 선택해보세요");
-  if (q.cmp < 40) tips.push("구도/포즈 정보를 추가하면 더 정확한 구성이 됩니다");
-  if (q.mod < 40) tips.push("분위기/무드를 입력하면 전체 톤앤매너가 명확해집니다");
-  const tipsEl = $("qsTips");
-  tipsEl.innerHTML = tips.slice(0, 3).map(t =>
-    `<div class="qs-tip"><span class="dot"></span>${t}</div>`
-  ).join("");
-}
-
-// ─────────────────────────────────────────────
+// ════════════════════════════════════
 // SYNTAX HIGHLIGHT
-// ─────────────────────────────────────────────
-function highlight(text) {
+// ════════════════════════════════════
+function highlight(text, fmt) {
   if (!text) return "";
   return text.split("\n").map(line => {
-    if (line.startsWith("━")) return `<span class="hl-section">${esc(line)}</span>`;
-    if (/^(TASK|SUBJECT|ART STYLE|COLOR|COMPOSITION|MOOD|EXTRA|TECHNICAL|STYLE KEYWORDS|OUTPUT|DELIVERABLE|POSITIVE:|NEGATIVE:|# )/.test(line))
-      return `<span class="hl-key">${esc(line)}</span>`;
-    if (/^\[(?:TASK|SUBJECT|ART STYLE|COLOR PALETTE|COMPOSITION|MOOD|ADDITIONAL|TECHNICAL|STYLE|OUTPUT|DELIVERABLE|Subject|Style|Technical)\]/.test(line))
-      return `<span class="hl-key">${esc(line)}</span>`;
-    if (/^[✓•]\s/.test(line)) return `<span class="hl-tech">${esc(line)}</span>`;
-    if (/^✗\s/.test(line)) return `<span class="hl-neg">${esc(line)}</span>`;
-    if (/^--no/.test(line)) return `<span class="hl-neg">${esc(line)}</span>`;
-    if (/^#/.test(line)) return `<span class="hl-comment">${esc(line)}</span>`;
-    if (line.includes("--ar") || line.includes("--v ") || line.includes("--style") || line.includes("--q ") || line.includes("--no "))
-      return `<span class="hl-chip">${esc(line)}</span>`;
-    return `<span class="hl-plain">${esc(line)}</span>`;
+    if (/^#/.test(line))                         return `<span class="hl-comment">${esc(line)}</span>`;
+    if (/^─+$/.test(line.trim()))                return `<span class="hl-sep">${esc(line)}</span>`;
+    if (/^(TASK|REQUIREMENTS|KEYWORDS|OUTPUT)\s/.test(line)) return `<span class="hl-head">${esc(line)}</span>`;
+    if (/^(SUBJECT|STYLE|COLORS|MOOD|EXTRA|POSITIVE:|NEGATIVE:)/.test(line)) return `<span class="hl-key">${esc(line)}</span>`;
+    if (/^(Subject:|Art style:|Color|Mood:|Additional:|Technical:|Keywords:|Output:)/.test(line)) return `<span class="hl-key">${esc(line)}</span>`;
+    if (/^\s*[✓•-]\s/.test(line))               return `<span class="hl-tech">${esc(line)}</span>`;
+    if (/--(?:ar|v|style|q|no)\b/.test(line))   return `<span class="hl-flag">${esc(line)}</span>`;
+    if (/^NEGATIVE:$/.test(line.trim()))         return `<span class="hl-neg">${esc(line)}</span>`;
+    if (/^\[/.test(line))                        return `<span class="hl-head">${esc(line)}</span>`;
+    return `<span class="hl-val">${esc(line)}</span>`;
   }).join("\n");
 }
 
-function esc(s) {
-  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+// ════════════════════════════════════
+// QUALITY
+// ════════════════════════════════════
+function score(text, ideal) {
+  if (!text.trim()) return 0;
+  const w = text.trim().split(/\s+/).length;
+  return Math.min(100, Math.round((w / ideal) * 70 + 30));
 }
 
-// ─────────────────────────────────────────────
-// COUNTER
-// ─────────────────────────────────────────────
-function updateCounter(text) {
-  const chars = text.length;
-  const tokens = Math.round(chars / 4);
-  $("counter").textContent = `${chars.toLocaleString()} chars · ~${tokens.toLocaleString()} tokens`;
+function updateQuality() {
+  const sub = score($("subject").value, 7);
+  const sty = score($("style").value, 5);
+  const col = score($("colors").value, 3);
+  const mod = score($("mood").value, 3);
+  const techOn = Object.keys(TECH_EN).filter(id => $(id)?.checked).length;
+  const chipOn = document.querySelectorAll(".chip.on").length;
+  const tch = Math.min(100, Math.round((techOn / 7) * 70 + (chipOn / 4) * 30));
+
+  const total = Math.round(sub * .28 + sty * .22 + tch * .22 + col * .15 + mod * .13);
+
+  const dims = [["sub",sub],["sty",sty],["tch",tch],["col",col],["mod",mod]];
+  const color = v => v >= 70 ? "var(--grn)" : v >= 40 ? "var(--ylw)" : "var(--red)";
+  dims.forEach(([k,v]) => {
+    const bar = $(`qb-${k}`), val = $(`qv-${k}`);
+    if (bar) { bar.style.width = v + "%"; bar.style.background = color(v); }
+    if (val) val.textContent = v;
+  });
+
+  $("qsTotal").textContent = total;
+  const grade = total >= 85 ? "Excellent ✦" : total >= 70 ? "Good" : total >= 50 ? "Fair" : total >= 30 ? "Needs work" : "Fill fields";
+  const gc = total >= 85 ? "var(--grn)" : total >= 70 ? "var(--ind)" : total >= 50 ? "var(--ylw)" : "var(--red)";
+  $("qsGrade").textContent = grade;
+  $("qsGrade").style.color = gc;
+
+  const tips = [];
+  if (sub < 50) tips.push("주제를 더 구체적으로 설명하세요");
+  else if (sty < 40) tips.push("아트 스타일을 추가하면 결과가 정확해집니다");
+  else if (col < 40) tips.push("색감 정보를 입력해보세요");
+  else if (tch < 50) tips.push("기술 요건과 키워드 칩을 더 선택해보세요");
+  const tipEl = $("qsTip");
+  tipEl.innerHTML = tips[0] ? `<div class="qs-tip">${tips[0]}</div>` : "";
 }
 
-// ─────────────────────────────────────────────
-// MAIN GENERATE
-// ─────────────────────────────────────────────
-async function generate() {
-  const btn = $("btnGenerate");
-  btn.disabled = true;
-  btn.textContent = "번역 중...";
-  $("promptBox").className = "prompt-box loading";
-  $("promptBox").textContent = "번역 및 프롬프트 생성 중...";
-
-  const [subjEN, styleEN, colorsEN, compEN, moodEN, extraEN] = await Promise.all([
-    translateKoToEn($("subject").value.trim()),
-    translateKoToEn($("style").value.trim()),
-    translateKoToEn($("colors").value.trim()),
-    translateKoToEn($("composition").value.trim()),
-    translateKoToEn($("mood").value.trim()),
-    translateKoToEn($("extra").value.trim()),
-  ]);
-
-  const en = {
-    subject: subjEN || $("subject").value.trim(),
-    style: styleEN || $("style").value.trim(),
-    colors: colorsEN || $("colors").value.trim(),
-    composition: compEN || $("composition").value.trim(),
-    mood: moodEN || $("mood").value.trim(),
-    extra: extraEN || $("extra").value.trim(),
-  };
-
-  st.prompts.gpt = buildGPT(en, st.mode);
-  st.prompts.mj  = buildMJ(en);
-  st.prompts.sd  = buildSD(en);
-  st.prompts.raw = buildRaw(en);
-  st.prompts.vars = buildVariations(en);
-
-  renderPrompt();
-  renderVariation();
-  updateCounter(st.prompts[st.fmt]);
-
-  if (en.subject) {
-    addHistory(en.subject.slice(0, 40) + (en.subject.length > 40 ? "…" : ""), st.prompts.gpt);
-  }
-
-  btn.disabled = false;
-  btn.textContent = "▶ 프롬프트 생성";
-  return st.prompts[st.fmt];
-}
-
-// ─────────────────────────────────────────────
+// ════════════════════════════════════
 // RENDER
-// ─────────────────────────────────────────────
-function renderPrompt() {
-  const text = st.prompts[st.fmt] || "";
-  const box = $("promptBox");
-  box.className = "prompt-box";
-  box.innerHTML = highlight(text);
-  updateCounter(text);
-}
-
-function renderVariation() {
-  const text = st.prompts.vars[st.varIdx] || "";
-  const box = $("varBox");
-  box.className = "prompt-box";
-  box.innerHTML = highlight(text);
-  box.style.minHeight = "100px";
-  box.style.fontSize = "11px";
-}
-
-// ─────────────────────────────────────────────
-// COPY / DOWNLOAD
-// ─────────────────────────────────────────────
-async function copyText(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch(e) {
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    document.body.removeChild(ta);
+// ════════════════════════════════════
+function renderOut() {
+  const text = ST.out[ST.fmt] || "";
+  const body = $("outBody");
+  if (!text) {
+    body.className = "output-body empty";
+    body.textContent = "프롬프트를 생성하려면 상단 버튼을 클릭하세요.";
+  } else {
+    body.className = "output-body";
+    body.innerHTML = highlight(text, ST.fmt);
   }
+  const chars = text.length;
+  $("outStat").textContent = chars ? `${chars.toLocaleString()} chars · ~${Math.round(chars/4).toLocaleString()} tokens` : "";
+  const modeLabel = { natural:"Natural", structured:"Structured", expert:"Expert" }[ST.mode];
+  const fmtLabel  = { gpt:"GPT Image 2", mj:"Midjourney", sd:"Stable Diffusion", debug:"Debug" }[ST.fmt];
+  $("outTitle").textContent = `${fmtLabel} — ${modeLabel} mode`;
+  $("statEl").textContent = chars ? `${chars.toLocaleString()} chars` : "—";
 }
 
-// ─────────────────────────────────────────────
+function renderVar() {
+  const text = ST.out.vars[ST.vi] || "";
+  const body = $("varBody");
+  if (!text) { body.style.color = "var(--t4)"; body.innerHTML = "생성 후 표시됩니다."; return; }
+  body.style.color = "";
+  body.innerHTML = highlight(text, "gpt");
+}
+
+// ════════════════════════════════════
 // HISTORY
-// ─────────────────────────────────────────────
-function loadStorage() {
-  try {
-    st.history = JSON.parse(localStorage.getItem("pngpb_h") || "[]");
-    st.presets = JSON.parse(localStorage.getItem("pngpb_p") || "[]");
-  } catch(e) {
-    st.history = [];
-    st.presets = [];
-  }
+// ════════════════════════════════════
+function loadSt() {
+  try { ST.hist = JSON.parse(localStorage.getItem("ps_h") || "[]"); } catch(e) { ST.hist = []; }
+  try { ST.pre  = JSON.parse(localStorage.getItem("ps_p") || "[]"); } catch(e) { ST.pre  = []; }
 }
-
-function saveStorage() {
-  localStorage.setItem("pngpb_h", JSON.stringify(st.history.slice(0, 20)));
-  localStorage.setItem("pngpb_p", JSON.stringify(st.presets.slice(0, 30)));
+function saveSt() {
+  localStorage.setItem("ps_h", JSON.stringify(ST.hist.slice(0, 20)));
+  localStorage.setItem("ps_p", JSON.stringify(ST.pre.slice(0, 30)));
 }
-
-function addHistory(label, prompt) {
-  st.history.unshift({ label, prompt, ts: Date.now() });
-  if (st.history.length > 20) st.history.pop();
-  saveStorage();
-  renderHistory();
+function addHist(label, text) {
+  ST.hist.unshift({ label, text, ts: Date.now() });
+  if (ST.hist.length > 20) ST.hist.pop();
+  saveSt(); renderHist();
 }
-
-function renderHistory() {
+function renderHist() {
   const bar = $("histBar");
-  bar.innerHTML = st.history.map((h, i) =>
-    `<div class="hist-item" data-i="${i}" title="${esc(h.prompt.slice(0,100))}">${esc(h.label)}</div>`
+  bar.innerHTML = ST.hist.map((h, i) =>
+    `<div class="hist-item" data-i="${i}">${esc(h.label)}</div>`
   ).join("");
   bar.querySelectorAll(".hist-item").forEach(el => {
     el.addEventListener("click", () => {
-      $("promptBox").className = "prompt-box";
-      $("promptBox").innerHTML = highlight(st.history[+el.dataset.i].prompt);
-      updateCounter(st.history[+el.dataset.i].prompt);
+      $("outBody").className = "output-body";
+      $("outBody").innerHTML = highlight(ST.hist[+el.dataset.i].text, ST.fmt);
     });
   });
 }
 
-// ─────────────────────────────────────────────
+// ════════════════════════════════════
 // PRESETS
-// ─────────────────────────────────────────────
-const BUILTIN_PRESETS = [
-  {
-    name: "귀여운 마스코트",
-    data: { type: "캐릭터 디자인", subject: "귀엽고 친근한 마스코트 캐릭터", style: "말랑한 소프트 3D 광고 캐릭터", colors: "파스텔 톤, 따뜻한 색감", composition: "정면, 손을 흔드는 포즈", mood: "밝고 경쾌한, 어린이 친화적", extra: "" }
-  },
-  {
-    name: "아이콘 세트",
-    data: { type: "아이콘 디자인", subject: "비즈니스 업무 관련 아이콘 세트", style: "플랫 벡터 라인 아이콘", colors: "단색 또는 제한된 팔레트", composition: "균일한 크기, 중앙 정렬", mood: "깔끔하고 전문적", extra: "일관된 선 굵기" }
-  },
-  {
-    name: "인쇄용 소스",
-    data: { type: "인쇄용 소스 디자인", subject: "전통 문양 기반 장식 소스", style: "현대적 해석의 한국 전통 문양", colors: "골드, 딥 블루, 크림 화이트", composition: "대칭 구도, 여백 충분", mood: "고급스럽고 정제된", extra: "인쇄 즉시 사용 가능한 품질" }
-  },
-  {
-    name: "귀여운 오브젝트",
-    data: { type: "오브젝트 디자인", subject: "귀여운 음식 캐릭터 오브젝트", style: "치비 스타일 일러스트", colors: "밝고 채도 높은 색감", composition: "중앙 배치, 안정적 구도", mood: "귀엽고 식욕 돋는", extra: "" }
-  },
-];
-
-function renderPresets() {
-  const list = $("presetList");
-  $("presetCount").textContent = st.presets.length;
-
-  list.innerHTML = st.presets.map((p, i) =>
-    `<div class="preset-item" data-i="${i}">${esc(p.name)}<span class="del" data-i="${i}">✕</span></div>`
-  ).join("");
-
-  list.querySelectorAll(".preset-item").forEach(el => {
-    el.addEventListener("click", (e) => {
-      if (e.target.classList.contains("del")) {
-        const i = +e.target.dataset.i;
-        st.presets.splice(i, 1);
-        saveStorage();
-        renderPresets();
-        toast("프리셋이 삭제되었습니다");
-        return;
-      }
-      const preset = st.presets[+el.dataset.i];
-      if (preset) applyPresetData(preset.data);
-    });
-  });
-
-  const builtin = $("builtinPresets");
-  builtin.innerHTML = BUILTIN_PRESETS.map((p, i) =>
-    `<div class="preset-item builtin" data-bi="${i}">${esc(p.name)}</div>`
-  ).join("");
-  builtin.querySelectorAll(".preset-item").forEach(el => {
-    el.addEventListener("click", () => {
-      applyPresetData(BUILTIN_PRESETS[+el.dataset.bi].data);
-      toast("프리셋이 적용되었습니다");
-    });
-  });
-}
-
-function applyPresetData(data) {
-  if (data.type) {
-    st.type = data.type;
-    document.querySelectorAll(".type-tab").forEach(t => {
-      t.classList.toggle("active", t.dataset.type === data.type);
-    });
+// ════════════════════════════════════
+function applyPresetData(d) {
+  if (d.type) {
+    ST.type = d.type;
+    document.querySelectorAll(".type-card").forEach(c => c.classList.toggle("on", c.dataset.type === d.type));
   }
-  if (data.subject !== undefined) $("subject").value = data.subject;
-  if (data.style !== undefined)   $("style").value = data.style;
-  if (data.colors !== undefined)  $("colors").value = data.colors;
-  if (data.composition !== undefined) $("composition").value = data.composition;
-  if (data.mood !== undefined)    $("mood").value = data.mood;
-  if (data.extra !== undefined)   $("extra").value = data.extra;
+  if (d.subject !== undefined) $("subject").value = d.subject;
+  if (d.style   !== undefined) $("style").value   = d.style;
+  if (d.colors  !== undefined) $("colors").value  = d.colors;
+  if (d.mood    !== undefined) $("mood").value    = d.mood;
+  if (d.extra   !== undefined) $("extra").value   = d.extra;
   updateQuality();
 }
 
 function getCurrentData() {
-  return {
-    type: st.type,
-    subject: $("subject").value,
-    style: $("style").value,
-    colors: $("colors").value,
-    composition: $("composition").value,
-    mood: $("mood").value,
-    extra: $("extra").value,
-  };
+  return { type: ST.type, subject: $("subject").value, style: $("style").value, colors: $("colors").value, mood: $("mood").value, extra: $("extra").value };
 }
 
-// ─────────────────────────────────────────────
-// CONFLICT CHECK
-// ─────────────────────────────────────────────
-function checkConflict() {
-  const is3D = [...document.querySelectorAll(".chip.on")].some(c => c.dataset.k && c.dataset.k.includes("3D"));
-  const isFlat = $("flatVector") && $("flatVector").checked;
-  const show = is3D && isFlat;
-  $("conflictSec").style.display = show ? "block" : "none";
-}
+function renderPresets() {
+  const list = $("presetList");
+  const built = BUILTIN.map((p, i) =>
+    `<span class="preset-pill builtin" data-bi="${i}">${esc(p.name)}</span>`
+  ).join("");
+  const saved = ST.pre.map((p, i) =>
+    `<span class="preset-pill saved" data-pi="${i}">${esc(p.name)}<span class="del" data-pi="${i}">✕</span></span>`
+  ).join("");
+  list.innerHTML = built + saved;
 
-// ─────────────────────────────────────────────
-// TOAST
-// ─────────────────────────────────────────────
-function toast(msg) {
-  const el = $("toast");
-  el.textContent = msg;
-  el.classList.add("show");
-  setTimeout(() => el.classList.remove("show"), 2200);
-}
-
-// ─────────────────────────────────────────────
-// RESET
-// ─────────────────────────────────────────────
-function resetAll() {
-  ["subject","style","colors","composition","mood","extra"].forEach(id => { if ($(id)) $(id).value = ""; });
-  document.querySelectorAll(".chip.on").forEach(c => c.classList.remove("on"));
-  document.querySelectorAll(".chk-label input[type=checkbox]").forEach(cb => {
-    cb.checked = ["transparent","shadowless","noBranding","highres","clean","safeCrop","original"].includes(cb.id);
+  list.querySelectorAll("[data-bi]").forEach(el => {
+    el.addEventListener("click", () => { applyPresetData(BUILTIN[+el.dataset.bi].d); toast("프리셋 적용됨"); });
   });
-  const r = document.querySelector('input[name="ratio"]#ratio11');
-  if (r) { r.checked = true; updateRatioUI(); }
-  updateQuality();
-  checkConflict();
-  $("promptBox").className = "prompt-box";
-  $("promptBox").textContent = "프롬프트를 생성하려면 주제를 입력하고 \"프롬프트 생성\" 버튼을 클릭하세요.";
-  $("varBox").textContent = "변형 프롬프트는 생성 후 표시됩니다.";
-  $("counter").textContent = "0 chars · 0 tokens";
+  list.querySelectorAll("[data-pi]").forEach(el => {
+    el.addEventListener("click", e => {
+      if (e.target.classList.contains("del")) {
+        ST.pre.splice(+e.target.dataset.pi, 1); saveSt(); renderPresets(); toast("삭제됨"); return;
+      }
+      applyPresetData(ST.pre[+el.dataset.pi].d); toast("프리셋 적용됨");
+    });
+  });
+}
+
+// ════════════════════════════════════
+// CONFLICT CHECK
+// ════════════════════════════════════
+function checkConflict() {
+  const is3d   = [...document.querySelectorAll(".chip.on")].some(c => c.dataset.k?.includes("3D"));
+  const isFlat = $("o_flat")?.checked;
+  $("conflictWarn").classList.toggle("show", !!(is3d && isFlat));
+}
+
+// ════════════════════════════════════
+// RESET
+// ════════════════════════════════════
+function resetAll() {
+  ["subject","style","colors","mood","extra"].forEach(id => { if($(id)) $(id).value=""; });
+  document.querySelectorAll(".chip.on").forEach(c => c.classList.remove("on"));
+  Object.keys(TECH_EN).forEach(id => {
+    if (!$(id)) return;
+    const def = ["o_transp","o_noshadow","o_notext","o_highres","o_clean","o_safe","o_original"].includes(id);
+    $(id).checked = def;
+    $(id).closest(".tgl").classList.toggle("on", def);
+  });
+  const r = $("r11"); if(r) { r.checked=true; updateRatioUI(); }
+  updateQuality(); checkConflict();
+  ST.out = { gpt:"", mj:"", sd:"", debug:"", vars:["","",""] };
+  renderOut(); renderVar();
   toast("초기화되었습니다");
 }
 
 function updateRatioUI() {
-  document.querySelectorAll(".ratio-btn").forEach(lbl => {
-    const inp = lbl.querySelector("input");
-    lbl.classList.toggle("active", inp && inp.checked);
+  document.querySelectorAll(".ratio-opt").forEach(lbl => {
+    lbl.classList.toggle("on", lbl.querySelector("input")?.checked);
   });
 }
 
-// ─────────────────────────────────────────────
-// EVENT BINDING
-// ─────────────────────────────────────────────
+// ════════════════════════════════════
+// MAIN GENERATE
+// ════════════════════════════════════
+async function generate() {
+  const btn = $("btnGen");
+  btn.disabled = true;
+  btn.classList.add("loading");
+
+  const [subEN, styEN, colEN, modEN, extEN] = await Promise.all([
+    tr($("subject").value.trim()),
+    tr($("style").value.trim()),
+    tr($("colors").value.trim()),
+    tr($("mood").value.trim()),
+    tr($("extra").value.trim()),
+  ]);
+
+  const en = {
+    subject: subEN || $("subject").value.trim(),
+    style:   styEN || $("style").value.trim(),
+    colors:  colEN || $("colors").value.trim(),
+    mood:    modEN || $("mood").value.trim(),
+    extra:   extEN || $("extra").value.trim(),
+  };
+
+  ST.out.gpt   = buildGPT(en, ST.mode);
+  ST.out.mj    = buildMJ(en);
+  ST.out.sd    = buildSD(en);
+  ST.out.debug = buildDebug(en);
+  ST.out.vars  = buildVariations(en);
+
+  renderOut(); renderVar();
+
+  const label = (en.subject || $("subject").value || "Untitled").slice(0, 45);
+  if (label) addHist(label, ST.out.gpt);
+
+  btn.disabled = false;
+  btn.classList.remove("loading");
+  return ST.out[ST.fmt];
+}
+
+// ════════════════════════════════════
+// INIT
+// ════════════════════════════════════
 function init() {
-  loadStorage();
+  loadSt();
 
   // Type tabs
-  document.querySelectorAll(".type-tab").forEach(tab => {
-    tab.addEventListener("click", () => {
-      st.type = tab.dataset.type;
-      document.querySelectorAll(".type-tab").forEach(t => t.classList.toggle("active", t === tab));
+  document.querySelectorAll(".type-card").forEach(c => {
+    c.addEventListener("click", () => {
+      ST.type = c.dataset.type;
+      document.querySelectorAll(".type-card").forEach(x => x.classList.toggle("on", x === c));
     });
   });
 
-  // Mode tabs
-  document.querySelectorAll(".mode-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      st.mode = btn.dataset.mode;
-      document.querySelectorAll(".mode-btn").forEach(b => b.classList.toggle("active", b === btn));
-      if (st.prompts.gpt) renderPrompt();
+  // Mode seg
+  document.querySelectorAll("#modeSeg .seg-btn").forEach(b => {
+    b.addEventListener("click", () => {
+      ST.mode = b.dataset.mode;
+      document.querySelectorAll("#modeSeg .seg-btn").forEach(x => x.classList.toggle("on", x === b));
+      if (ST.out.gpt) renderOut();
     });
   });
 
-  // Format tabs
-  document.querySelectorAll(".fmt-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      st.fmt = btn.dataset.fmt;
-      document.querySelectorAll(".fmt-btn").forEach(b => b.classList.toggle("active", b === btn));
-      renderPrompt();
+  // Fmt seg
+  document.querySelectorAll("#fmtSeg .seg-btn").forEach(b => {
+    b.addEventListener("click", () => {
+      ST.fmt = b.dataset.fmt;
+      document.querySelectorAll("#fmtSeg .seg-btn").forEach(x => x.classList.toggle("on", x === b));
+      renderOut();
     });
   });
 
-  // Variation tabs
-  document.querySelectorAll(".var-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      st.varIdx = +btn.dataset.var;
-      document.querySelectorAll(".var-btn").forEach(b => b.classList.toggle("active", b === btn));
-      renderVariation();
+  // Var tabs
+  document.querySelectorAll(".var-tab").forEach(b => {
+    b.addEventListener("click", () => {
+      ST.vi = +b.dataset.vi;
+      document.querySelectorAll(".var-tab").forEach(x => x.classList.toggle("on", x === b));
+      renderVar();
     });
   });
 
   // Chips
-  document.querySelectorAll(".chip").forEach(chip => {
-    chip.addEventListener("click", () => {
-      chip.classList.toggle("on");
-      checkConflict();
-      updateQuality();
+  document.querySelectorAll(".chip").forEach(c => {
+    c.addEventListener("click", () => { c.classList.toggle("on"); checkConflict(); updateQuality(); });
+  });
+
+  // Toggles
+  document.querySelectorAll(".tgl").forEach(lbl => {
+    lbl.addEventListener("click", () => {
+      const cb = lbl.querySelector("input");
+      if (!cb) return;
+      setTimeout(() => {
+        lbl.classList.toggle("on", cb.checked);
+        checkConflict(); updateQuality();
+      }, 0);
     });
   });
 
@@ -1112,48 +1375,35 @@ function init() {
     r.addEventListener("change", () => { updateRatioUI(); updateQuality(); });
   });
 
-  // Checkboxes live quality
-  document.querySelectorAll(".chk-label input").forEach(cb => {
-    cb.addEventListener("change", () => { checkConflict(); updateQuality(); });
-  });
-
-  // Fields live quality
-  ["subject","style","colors","composition","mood","extra"].forEach(id => {
-    if ($(id)) $(id).addEventListener("input", updateQuality);
+  // Live quality on fields
+  ["subject","style","colors","mood","extra"].forEach(id => {
+    $(id)?.addEventListener("input", updateQuality);
   });
 
   // Generate
-  $("btnGenerate").addEventListener("click", generate);
+  $("btnGen").addEventListener("click", generate);
 
   // Copy
   $("btnCopy").addEventListener("click", async () => {
-    const text = st.prompts[st.fmt] || await generate();
-    await copyText(text);
-    toast("클립보드에 복사되었습니다");
+    const t = ST.out[ST.fmt] || await generate();
+    await copyText(t); toast("복사되었습니다");
   });
 
   // Download
-  $("btnDownload").addEventListener("click", async () => {
-    const text = st.prompts[st.fmt] || await generate();
-    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  $("btnDL").addEventListener("click", async () => {
+    const t = ST.out[ST.fmt] || await generate();
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
+    a.href = URL.createObjectURL(new Blob([t], { type:"text/plain;charset=utf-8" }));
     a.download = `prompt_${Date.now()}.txt`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-    toast("TXT 파일로 저장되었습니다");
+    a.click(); URL.revokeObjectURL(a.href);
+    toast("파일 저장됨");
   });
 
-  // Copy all formats
-  $("btnCopyAll").addEventListener("click", async () => {
-    if (!st.prompts.gpt) { toast("먼저 프롬프트를 생성하세요"); return; }
-    const all = [
-      "=== GPT Image ===\n" + st.prompts.gpt,
-      "\n\n=== Midjourney ===\n" + st.prompts.mj,
-      "\n\n=== Stable Diffusion ===\n" + st.prompts.sd,
-    ].join("");
-    await copyText(all);
-    toast("3종 포맷이 모두 복사되었습니다");
+  // Copy all
+  $("btnAll").addEventListener("click", async () => {
+    if (!ST.out.gpt) { toast("먼저 프롬프트를 생성하세요"); return; }
+    const all = `=== GPT Image 2 ===\n${ST.out.gpt}\n\n=== Midjourney ===\n${ST.out.mj}\n\n=== Stable Diffusion ===\n${ST.out.sd}`;
+    await copyText(all); toast("3종 포맷 모두 복사됨");
   });
 
   // Reset
@@ -1161,39 +1411,32 @@ function init() {
 
   // Save preset
   $("btnSavePreset").addEventListener("click", () => {
-    $("presetNameInput").value = "";
-    $("presetModal").classList.add("show");
-    setTimeout(() => $("presetNameInput").focus(), 50);
+    $("modalInput").value = "";
+    $("modalBg").classList.add("show");
+    setTimeout(() => $("modalInput").focus(), 50);
   });
-  $("btnModalCancel").addEventListener("click", () => $("presetModal").classList.remove("show"));
-  $("btnModalSave").addEventListener("click", () => {
-    const name = $("presetNameInput").value.trim();
-    if (!name) { toast("이름을 입력해주세요"); return; }
-    st.presets.unshift({ name, data: getCurrentData() });
-    saveStorage();
-    renderPresets();
-    $("presetModal").classList.remove("show");
-    toast(`"${name}" 프리셋이 저장되었습니다`);
+  $("btnModalCancel").addEventListener("click", () => $("modalBg").classList.remove("show"));
+  $("btnModalOk").addEventListener("click", () => {
+    const name = $("modalInput").value.trim();
+    if (!name) { toast("이름을 입력하세요"); return; }
+    ST.pre.unshift({ name, d: getCurrentData() });
+    saveSt(); renderPresets();
+    $("modalBg").classList.remove("show");
+    toast(`"${name}" 저장됨`);
   });
-  $("presetNameInput").addEventListener("keydown", e => {
-    if (e.key === "Enter") $("btnModalSave").click();
-    if (e.key === "Escape") $("presetModal").classList.remove("show");
+  $("modalInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") $("btnModalOk").click();
+    if (e.key === "Escape") $("modalBg").classList.remove("show");
   });
-  $("presetModal").addEventListener("click", e => {
-    if (e.target === $("presetModal")) $("presetModal").classList.remove("show");
-  });
+  $("modalBg").addEventListener("click", e => { if (e.target === $("modalBg")) $("modalBg").classList.remove("show"); });
 
   // History clear
   $("btnClearHist").addEventListener("click", () => {
-    st.history = [];
-    saveStorage();
-    renderHistory();
-    toast("히스토리가 삭제되었습니다");
+    ST.hist = []; saveSt(); renderHist(); toast("히스토리 삭제됨");
   });
 
-  // Init renders
   updateQuality();
-  renderHistory();
+  renderHist();
   renderPresets();
   updateRatioUI();
 }
