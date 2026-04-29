@@ -441,6 +441,58 @@ body {
 .var-tab:hover { color: var(--t2); border-color: var(--border2); }
 .var-tab.on { background: var(--pur-bg); border-color: rgba(192,132,252,.35); color: var(--pur); }
 
+/* ── ALWAYS-ON TECH ── */
+.always-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.always-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 11px;
+  background: linear-gradient(135deg,rgba(52,211,153,.12),rgba(99,102,241,.10));
+  border: 1px solid rgba(52,211,153,.3);
+  border-radius: 20px;
+  color: #34d399;
+}
+.always-tag svg { width:11px;height:11px;fill:none;stroke:#34d399;stroke-width:2; }
+.tgl-section-label {
+  grid-column: 1 / -1;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--t4);
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  margin-top: 4px;
+  padding: 4px 0 2px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── HEADER RESET BTN ── */
+.btn-gen-reset {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 7px 13px;
+  background: var(--s3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--t3);
+  cursor: pointer;
+  transition: all .18s;
+  white-space: nowrap;
+}
+.btn-gen-reset:hover { background: var(--s4); color: var(--t2); }
+
+/* ── PRESET DEL-BI ── */
+.preset-pill .del-bi { color: var(--t4); font-size: 10px; line-height: 1; margin-left: 2px; cursor: pointer; }
+.preset-pill .del-bi:hover { color: var(--red); }
+
 /* ── KOREAN ORIGINAL BLOCK ── */
 .ko-block {
   background: rgba(99,102,241,.08);
@@ -451,7 +503,9 @@ body {
   color: var(--t2);
   line-height: 1.7;
   margin-bottom: 6px;
+  font-family: 'Inter', sans-serif;
 }
+.ko-block strong { color: var(--t3); font-weight: 500; }
 .ko-divider {
   font-size: 10px;
   font-weight: 600;
@@ -579,6 +633,7 @@ body {
   </div>
   <div class="hdr-space"></div>
   <div class="hdr-stat" id="statEl">—</div>
+  <button class="btn-gen-reset" id="btnResetHdr">초기화</button>
   <button class="btn-gen" id="btnGen">
     <div class="spinner"></div>
     <span class="btn-label">프롬프트 생성</span>
@@ -657,7 +712,20 @@ body {
     <!-- TECH -->
     <div class="blk">
       <div class="blk-title">기술 요건</div>
+      <!-- Always-on (locked) -->
+      <div class="always-tech">
+        <span class="always-tag">
+          <svg viewBox="0 0 12 12"><rect x="2" y="5" width="8" height="6" rx="1"/><path d="M4 5V3.5a2 2 0 0 1 4 0V5"/></svg>
+          투명 배경 PNG
+        </span>
+        <span class="always-tag">
+          <svg viewBox="0 0 12 12"><rect x="2" y="5" width="8" height="6" rx="1"/><path d="M4 5V3.5a2 2 0 0 1 4 0V5"/></svg>
+          고해상도 인쇄용
+        </span>
+      </div>
+      <!-- Toggleable -->
       <div class="toggle-grid" id="toggleGrid">
+        <div class="tgl-section-label">인쇄 스타일</div>
         <label class="tgl on">
           <input type="checkbox" id="o_public" checked>
           <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
@@ -666,12 +734,12 @@ body {
         <label class="tgl on">
           <input type="checkbox" id="o_flat" checked>
           <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
-          <span class="tgl-text">플랫 벡터 일러스트</span>
+          <span class="tgl-text">플랫 벡터</span>
         </label>
         <label class="tgl on">
           <input type="checkbox" id="o_infog" checked>
           <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
-          <span class="tgl-text">인포그래픽형 디자인</span>
+          <span class="tgl-text">인포그래픽형</span>
         </label>
         <label class="tgl on">
           <input type="checkbox" id="o_line" checked>
@@ -688,11 +756,7 @@ body {
           <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
           <span class="tgl-text">하늘/배경 삭제</span>
         </label>
-        <label class="tgl on">
-          <input type="checkbox" id="o_transp" checked>
-          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
-          <span class="tgl-text">투명 배경</span>
-        </label>
+        <div class="tgl-section-label">기본 기술 요건</div>
         <label class="tgl on">
           <input type="checkbox" id="o_noshadow" checked>
           <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
@@ -702,11 +766,6 @@ body {
           <input type="checkbox" id="o_notext" checked>
           <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
           <span class="tgl-text">텍스트 없음</span>
-        </label>
-        <label class="tgl on">
-          <input type="checkbox" id="o_highres" checked>
-          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
-          <span class="tgl-text">고해상도</span>
         </label>
         <label class="tgl on">
           <input type="checkbox" id="o_clean" checked>
@@ -879,12 +938,16 @@ const TYPE_EN = {
   "오브젝트 디자인":    "decorative graphic object",
 };
 
+// Always injected into every prompt regardless of toggle state
+const ALWAYS_TECH_EN = [
+  "transparent background with clean alpha channel, PNG with alpha",
+  "high resolution print-ready quality",
+];
+
 const TECH_EN = {
   o_public:   "public-friendly clean institutional style, safe for all ages, government-grade imagery",
-  o_transp:   "transparent background with clean alpha channel",
   o_noshadow: "no drop shadow, no cast shadow, no ground shadow",
   o_notext:   "no text, no watermark, no logo, no signature",
-  o_highres:  "high resolution, print-ready quality",
   o_clean:    "crisp clean edges, sharp well-defined outlines",
   o_safe:     "full subject visible within frame, safe margins, nothing cropped",
   o_original: "original design, copyright-safe, not based on any existing IP",
@@ -929,6 +992,70 @@ const TECH_CHIP_EN = {
 
 const RATIO_EN  = { r11:"1:1", r43:"4:3", r34:"3:4", r169:"16:9", r916:"9:16" };
 
+// Per-type: togglesOn, chips, placeholders, built-in presets
+const TYPE_CONFIG = {
+  "인쇄용 소스 디자인": {
+    togglesOn: ["o_public","o_flat","o_infog","o_simple","o_noshadow","o_notext","o_clean","o_safe","o_original"],
+    chipsOn:   ["합성하기 쉽게","중앙 배치","균일한 크기","상업 디자인 느낌"],
+    ph: {
+      subject: "예: 봄 축제 홍보 그래픽, 서울시 공원 이벤트용 인쇄 소스",
+      style:   "예: 인포그래픽형 플랫 벡터 일러스트",
+      colors:  "예: 관공서 톤, 파랑 계열, 밝은 원색",
+      mood:    "예: 공식적이고 친근한, 가족 친화적",
+      extra:   "예: A4 인쇄 기준, 여백 확보",
+    },
+    presets: [
+      { name:"행사 홍보 소스",  d:{ subject:"지역 축제 및 공공행사 홍보 그래픽 소스", style:"인포그래픽형 플랫 벡터 일러스트", colors:"관공서 톤, 파랑 계열, 밝은 원색", mood:"공식적이고 친근한, 가족 친화적", extra:"" } },
+      { name:"관공서 홍보물",   d:{ subject:"시청 문화행사 홍보 배너용 그래픽 소스", style:"공공기관 스타일 플랫 일러스트", colors:"파랑, 흰색, 하늘색", mood:"공식적이고 신뢰감 있는", extra:"정부 기관 사용 가능 저작권 안전 디자인" } },
+    ],
+  },
+  "캐릭터 디자인": {
+    togglesOn: ["o_noshadow","o_notext","o_clean","o_safe","o_original"],
+    chipsOn:   ["귀엽고 친근하게","브랜드 마스코트 느낌","중앙 배치","정면 구도"],
+    ph: {
+      subject: "예: 딸기 체험농장 귀여운 마스코트, 손을 흔드는 친근한 포즈",
+      style:   "예: 말랑한 소프트 3D 광고 캐릭터 스타일",
+      colors:  "예: 딸기 레드, 잎사귀 그린, 크림 화이트",
+      mood:    "예: 밝고 경쾌한, 어린이 친화적",
+      extra:   "예: 전신 전면 구도, 과도한 장식 없이 깔끔하게",
+    },
+    presets: [
+      { name:"딸기 체험농장 마스코트", d:{ subject:"딸기 체험농장용 귀여운 마스코트 캐릭터", style:"말랑한 소프트 3D 광고 캐릭터", colors:"딸기 레드, 잎사귀 그린, 크림톤", mood:"밝고 경쾌한, 어린이 친화적", extra:"손을 흔드는 친근한 포즈" } },
+      { name:"카페 브랜드 마스코트",  d:{ subject:"아늑한 카페 브랜드 마스코트 캐릭터", style:"귀엽고 따뜻한 일러스트 캐릭터", colors:"라떼 브라운, 크림 화이트, 베이지", mood:"아늑하고 친근한, 힐링 감성", extra:"커피컵 들고 있는 포즈" } },
+    ],
+  },
+  "아이콘 디자인": {
+    togglesOn: ["o_flat","o_line","o_simple","o_noshadow","o_notext","o_clean","o_original"],
+    chipsOn:   ["균일한 크기","각 요소 분리","외곽선 선명하게","벡터화하기 쉬운 단순 형태"],
+    ph: {
+      subject: "예: 고깃집 메뉴 홍보 아이콘 세트, 육류·불·접시 포함",
+      style:   "예: 플랫 벡터 라인 아이콘",
+      colors:  "예: 단색 또는 2~3색 제한 팔레트",
+      mood:    "예: 깔끔하고 일관된 세트",
+      extra:   "예: 동일한 선 굵기와 크기 기준으로 세트 구성",
+    },
+    presets: [
+      { name:"고깃집 이벤트 아이콘", d:{ subject:"고깃집 메뉴 및 이벤트 홍보 아이콘 세트", style:"플랫 벡터 라인 아이콘", colors:"불꽃 오렌지, 브라운, 레드", mood:"식욕 돋고 활기찬", extra:"일관된 선 굵기, 세트 구성" } },
+      { name:"카페 메뉴 아이콘",     d:{ subject:"카페 음료 및 디저트 메뉴 아이콘 세트", style:"미니멀 플랫 아이콘, 단선 라인아트", colors:"브라운, 베이지, 크림 화이트", mood:"모던하고 깔끔한", extra:"커피, 케이크, 쿠키, 주스 포함" } },
+    ],
+  },
+  "오브젝트 디자인": {
+    togglesOn: ["o_clean","o_safe","o_noshadow","o_notext","o_original"],
+    chipsOn:   ["합성하기 쉽게","과도한 장식 없음","여백 넉넉하게"],
+    ph: {
+      subject: "예: 어린이날 행사 장식 오브젝트, 풍선·리본·선물상자",
+      style:   "예: 플랫 벡터 일러스트, 밝고 귀여운",
+      colors:  "예: 노랑, 민트, 핑크, 하늘색",
+      mood:    "예: 밝고 귀엽고 어린이 친화적",
+      extra:   "예: 각 오브젝트 개별 배치, 세트 구성",
+    },
+    presets: [
+      { name:"어린이날 오브젝트",    d:{ subject:"어린이날 행사용 장식 오브젝트 세트", style:"플랫 벡터 일러스트", colors:"노랑, 민트, 핑크, 하늘색", mood:"밝고 귀엽고 어린이 친화적", extra:"풍선, 선물상자, 리본 포함" } },
+      { name:"크리스마스 장식 세트", d:{ subject:"크리스마스 시즌 장식 오브젝트 세트", style:"플랫 벡터 일러스트, 따뜻한 느낌", colors:"크리스마스 레드, 그린, 골드", mood:"따뜻하고 축제적인 분위기", extra:"트리, 선물, 눈송이, 별 포함" } },
+    ],
+  },
+};
+
 // ════════════════════════════════════
 // STATE
 // ════════════════════════════════════
@@ -941,14 +1068,8 @@ const ST = {
   hist: [],
   pre:  [],
   cache: {},
+  deletedBuiltins: {},
 };
-
-const BUILTIN = [
-  { name:"딸기 체험농장 마스코트", d:{ type:"캐릭터 디자인", subject:"딸기 체험농장용 귀여운 마스코트 캐릭터", style:"말랑한 소프트 3D 광고 캐릭터", colors:"딸기 레드, 잎사귀 그린, 크림톤", mood:"밝고 경쾌한, 어린이 친화적", extra:"손을 흔드는 친근한 포즈" } },
-  { name:"고깃집 이벤트 아이콘",  d:{ type:"아이콘 디자인",   subject:"고깃집 메뉴 및 이벤트 홍보 아이콘", style:"플랫 벡터 라인 아이콘", colors:"불꽃 오렌지, 브라운, 레드", mood:"식욕 돋고 활기찬", extra:"일관된 선 굵기, 세트 구성" } },
-  { name:"어린이날 오브젝트",     d:{ type:"오브젝트 디자인",  subject:"어린이날 행사용 장식 오브젝트", style:"플랫 벡터 일러스트", colors:"노랑, 민트, 핑크, 하늘색", mood:"밝고 귀엽고 어린이 친화적", extra:"풍선, 선물상자, 리본 포함" } },
-  { name:"행사 홍보 소스",        d:{ type:"인쇄용 소스 디자인", subject:"지역 축제 및 공공행사 홍보 그래픽 소스", style:"인포그래픽형 플랫 벡터 일러스트", colors:"관공서 톤, 파랑 계열, 밝은 원색", mood:"공식적이고 친근한, 가족 친화적", extra:"" } },
-];
 
 // ════════════════════════════════════
 // UTILS
@@ -1010,7 +1131,7 @@ function getRatioId() {
 // ════════════════════════════════════
 function buildGPT(en, mode) {
   const type = TYPE_EN[ST.type] || ST.type;
-  const tech = getCheckedTech();
+  const tech = [...ALWAYS_TECH_EN, ...getCheckedTech()];
   const chips = getChips();
   const ratio = RATIO_EN[getRatioId()];
 
@@ -1023,23 +1144,24 @@ function buildGPT(en, mode) {
     if (en.mood) parts.push(`with a ${en.mood} feel`);
     if (en.extra) parts.push(en.extra);
 
-    const techKey = [];
-    if ($("o_public")?.checked) techKey.push("public-friendly institutional style");
-    if ($("o_flat")?.checked) techKey.push("flat vector style");
-    if ($("o_infog")?.checked) techKey.push("infographic-style composition");
-    if ($("o_line")?.checked) techKey.push("line art style");
-    if ($("o_simple")?.checked) techKey.push("simple flat coloring");
+    const techKey = [
+      "transparent background, PNG with alpha channel",
+      "high resolution print-ready",
+    ];
+    if ($("o_public")?.checked)    techKey.push("public-friendly institutional style");
+    if ($("o_flat")?.checked)      techKey.push("flat vector style");
+    if ($("o_infog")?.checked)     techKey.push("infographic-style composition");
+    if ($("o_line")?.checked)      techKey.push("line art style");
+    if ($("o_simple")?.checked)    techKey.push("simple flat coloring");
     if ($("o_removesky")?.checked) techKey.push("no sky, no background scenery");
-    if ($("o_transp")?.checked) techKey.push("transparent background");
-    if ($("o_noshadow")?.checked) techKey.push("no shadows");
-    if ($("o_notext")?.checked) techKey.push("no text or watermarks");
-    if ($("o_clean")?.checked) techKey.push("clean crisp edges");
-    if ($("o_safe")?.checked) techKey.push("full subject in frame");
-    if ($("o_highres")?.checked) techKey.push("high resolution");
-    if ($("o_original")?.checked) techKey.push("original design");
+    if ($("o_noshadow")?.checked)  techKey.push("no shadows");
+    if ($("o_notext")?.checked)    techKey.push("no text or watermarks");
+    if ($("o_clean")?.checked)     techKey.push("clean crisp edges");
+    if ($("o_safe")?.checked)      techKey.push("full subject in frame");
+    if ($("o_original")?.checked)  techKey.push("original design");
 
     let out = `Create a ${type}: ${parts.join(", ")}.`;
-    if (techKey.length) out += ` ${techKey.join(", ")}.`;
+    out += ` ${techKey.join(", ")}.`;
     if (chips.length) out += ` ${chips.join(", ")}.`;
     if (ratio) out += ` Aspect ratio ${ratio}.`;
     return out;
@@ -1052,7 +1174,8 @@ function buildGPT(en, mode) {
     if (en.colors)   lines.push(`Color palette: ${en.colors}`);
     if (en.mood)     lines.push(`Mood: ${en.mood}`);
     if (en.extra)    lines.push(`Additional: ${en.extra}`);
-    if (tech.length) { lines.push(""); lines.push("Technical:"); tech.forEach(t => lines.push(`- ${t}`)); }
+    lines.push(""); lines.push("Technical:");
+    tech.forEach(t => lines.push(`- ${t}`));
     if (chips.length) { lines.push(""); lines.push(`Keywords: ${chips.join(", ")}`); }
     if (ratio) { lines.push(""); lines.push(`Output: ${ratio} aspect ratio`); }
     return lines.join("\n");
@@ -1066,7 +1189,8 @@ function buildGPT(en, mode) {
     if (en.colors)   lines.push(`COLORS       ${en.colors}`);
     if (en.mood)     lines.push(`MOOD         ${en.mood}`);
     if (en.extra)    lines.push(`EXTRA        ${en.extra}`);
-    if (tech.length) { lines.push(sep); lines.push("REQUIREMENTS"); tech.forEach(t => lines.push(`  ✓ ${t}`)); }
+    lines.push(sep); lines.push("REQUIREMENTS");
+    tech.forEach(t => lines.push(`  ✓ ${t}`));
     if (chips.length){ lines.push(sep); lines.push(`KEYWORDS     ${chips.join(" · ")}`); }
     if (ratio)       { lines.push(sep); lines.push(`OUTPUT       ${ratio} aspect ratio, PNG with alpha channel`); }
     lines.push(sep);
@@ -1077,7 +1201,7 @@ function buildGPT(en, mode) {
 
 function buildGemini(en, mode) {
   const type = TYPE_EN[ST.type] || ST.type;
-  const tech = getCheckedTech();
+  const tech = [...ALWAYS_TECH_EN, ...getCheckedTech()];
   const chips = getChips();
   const ratio = RATIO_EN[getRatioId()];
 
@@ -1088,9 +1212,11 @@ function buildGemini(en, mode) {
     if (en.mood)   desc.push(`conveying a ${en.mood} atmosphere`);
     if (en.extra)  desc.push(en.extra);
 
-    const reqs = [];
+    const reqs = [
+      "isolated on transparent background",
+      "high resolution print quality",
+    ];
     if ($("o_public")?.checked)    reqs.push("clean institutional style appropriate for public use");
-    if ($("o_transp")?.checked)    reqs.push("isolated on transparent background");
     if ($("o_noshadow")?.checked)  reqs.push("no shadows of any kind");
     if ($("o_notext")?.checked)    reqs.push("no text, no logos, no watermarks");
     if ($("o_flat")?.checked)      reqs.push("flat vector illustration");
@@ -1098,14 +1224,13 @@ function buildGemini(en, mode) {
     if ($("o_line")?.checked)      reqs.push("clear defined outlines");
     if ($("o_simple")?.checked)    reqs.push("simple flat coloring");
     if ($("o_removesky")?.checked) reqs.push("no sky or background scenery");
-    if ($("o_highres")?.checked)   reqs.push("high resolution print quality");
     if ($("o_clean")?.checked)     reqs.push("crisp clean edges");
     if ($("o_safe")?.checked)      reqs.push("full subject within frame");
     if ($("o_original")?.checked)  reqs.push("original artwork, not based on existing IP");
     if (ratio) reqs.push(`${ratio} aspect ratio`);
 
     let out = `Generate a ${type}: ${desc.join(", ")}.`;
-    if (reqs.length) out += ` Requirements: ${reqs.join("; ")}.`;
+    out += ` Requirements: ${reqs.join("; ")}.`;
     if (chips.length) out += ` Style keywords: ${chips.slice(0, 8).join(", ")}.`;
     return out;
   }
@@ -1117,7 +1242,8 @@ function buildGemini(en, mode) {
     if (en.colors)   lines.push(`Colors: ${en.colors}`);
     if (en.mood)     lines.push(`Mood: ${en.mood}`);
     if (en.extra)    lines.push(`Details: ${en.extra}`);
-    if (tech.length) { lines.push(""); lines.push("Constraints:"); tech.forEach(t => lines.push(`- ${t}`)); }
+    lines.push(""); lines.push("Constraints:");
+    tech.forEach(t => lines.push(`- ${t}`));
     if (chips.length) { lines.push(""); lines.push(`Style tags: ${chips.join(", ")}`); }
     if (ratio) { lines.push(""); lines.push(`Aspect ratio: ${ratio}`); }
     return lines.join("\n");
@@ -1131,7 +1257,8 @@ function buildGemini(en, mode) {
     if (en.colors)   lines.push(`COLORS       ${en.colors}`);
     if (en.mood)     lines.push(`MOOD         ${en.mood}`);
     if (en.extra)    lines.push(`DETAILS      ${en.extra}`);
-    if (tech.length) { lines.push(sep); lines.push("CONSTRAINTS"); tech.forEach(t => lines.push(`  ✓ ${t}`)); }
+    lines.push(sep); lines.push("CONSTRAINTS");
+    tech.forEach(t => lines.push(`  ✓ ${t}`));
     if (chips.length){ lines.push(sep); lines.push(`STYLE TAGS   ${chips.join(" · ")}`); }
     if (ratio)       { lines.push(sep); lines.push(`RATIO        ${ratio}, PNG with alpha channel`); }
     lines.push(sep);
@@ -1154,7 +1281,7 @@ function buildKoSummary() {
 
 function buildVariations(en) {
   const type = TYPE_EN[ST.type] || ST.type;
-  const tech = getCheckedTech();
+  const tech = [...ALWAYS_TECH_EN, ...getCheckedTech()];
   const chips = getChips();
 
   const v0 = `[Subject-Focused]\nCreate a ${type} where the primary focus is: ${en.subject || "(subject)"}.\nMake the subject the undeniable hero of the composition.\nStyle: ${en.style || "clean commercial illustration"}. Colors: ${en.colors || "harmonious palette"}.\n${tech.slice(0,4).join(", ")}.`;
@@ -1199,9 +1326,10 @@ function updateQuality() {
   const sty = score($("style").value, 5);
   const col = score($("colors").value, 3);
   const mod = score($("mood").value, 3);
-  const techOn = Object.keys(TECH_EN).filter(id => $(id)?.checked).length;
+  // +2 for the always-on ALWAYS_TECH_EN items
+  const techOn = 2 + Object.keys(TECH_EN).filter(id => $(id)?.checked).length;
   const chipOn = document.querySelectorAll(".chip.on").length;
-  const tch = Math.min(100, Math.round((techOn / 7) * 70 + (chipOn / 4) * 30));
+  const tch = Math.min(100, Math.round((techOn / 9) * 70 + (chipOn / 4) * 30));
 
   const total = Math.round(sub * .28 + sty * .22 + tch * .22 + col * .15 + mod * .13);
 
@@ -1267,12 +1395,14 @@ function renderVar() {
 // HISTORY
 // ════════════════════════════════════
 function loadSt() {
-  try { ST.hist = JSON.parse(localStorage.getItem("ps_h") || "[]"); } catch(e) { ST.hist = []; }
-  try { ST.pre  = JSON.parse(localStorage.getItem("ps_p") || "[]"); } catch(e) { ST.pre  = []; }
+  try { ST.hist = JSON.parse(localStorage.getItem("ps_h")  || "[]"); } catch(e) { ST.hist = []; }
+  try { ST.pre  = JSON.parse(localStorage.getItem("ps_p")  || "[]"); } catch(e) { ST.pre  = []; }
+  try { ST.deletedBuiltins = JSON.parse(localStorage.getItem("ps_db") || "{}"); } catch(e) { ST.deletedBuiltins = {}; }
 }
 function saveSt() {
-  localStorage.setItem("ps_h", JSON.stringify(ST.hist.slice(0, 20)));
-  localStorage.setItem("ps_p", JSON.stringify(ST.pre.slice(0, 30)));
+  localStorage.setItem("ps_h",  JSON.stringify(ST.hist.slice(0, 20)));
+  localStorage.setItem("ps_p",  JSON.stringify(ST.pre.slice(0, 30)));
+  localStorage.setItem("ps_db", JSON.stringify(ST.deletedBuiltins));
 }
 function addHist(label, text) {
   ST.hist.unshift({ label, text, ts: Date.now() });
@@ -1299,6 +1429,7 @@ function applyPresetData(d) {
   if (d.type) {
     ST.type = d.type;
     document.querySelectorAll(".type-card").forEach(c => c.classList.toggle("on", c.dataset.type === d.type));
+    applyTypeConfig(d.type);
   }
   if (d.subject !== undefined) $("subject").value = d.subject;
   if (d.style   !== undefined) $("style").value   = d.style;
@@ -1314,18 +1445,39 @@ function getCurrentData() {
 
 function renderPresets() {
   const list = $("presetList");
-  const built = BUILTIN.map((p, i) =>
-    `<span class="preset-pill builtin" data-bi="${i}">${esc(p.name)}</span>`
-  ).join("");
+  const cfg = TYPE_CONFIG[ST.type];
+  if (!cfg) { list.innerHTML = ""; return; }
+
+  const deleted = ST.deletedBuiltins[ST.type] || {};
+
+  const built = cfg.presets.map((p, i) => {
+    if (deleted[i]) return "";
+    return `<span class="preset-pill builtin" data-bi="${i}">${esc(p.name)}<span class="del-bi" data-bi="${i}" title="삭제">✕</span></span>`;
+  }).join("");
+
   const saved = ST.pre.map((p, i) =>
     `<span class="preset-pill saved" data-pi="${i}">${esc(p.name)}<span class="del" data-pi="${i}">✕</span></span>`
   ).join("");
+
   list.innerHTML = built + saved;
 
-  list.querySelectorAll("[data-bi]").forEach(el => {
-    el.addEventListener("click", () => { applyPresetData(BUILTIN[+el.dataset.bi].d); toast("프리셋 적용됨"); });
+  list.querySelectorAll(".preset-pill.builtin").forEach(el => {
+    el.addEventListener("click", e => {
+      if (e.target.classList.contains("del-bi")) {
+        e.stopPropagation();
+        const idx = +e.target.dataset.bi;
+        if (!ST.deletedBuiltins[ST.type]) ST.deletedBuiltins[ST.type] = {};
+        ST.deletedBuiltins[ST.type][idx] = true;
+        saveSt(); renderPresets(); toast("프리셋 삭제됨");
+        return;
+      }
+      const idx = +el.dataset.bi;
+      applyPresetData({ ...cfg.presets[idx].d, type: ST.type });
+      toast("프리셋 적용됨");
+    });
   });
-  list.querySelectorAll("[data-pi]").forEach(el => {
+
+  list.querySelectorAll(".preset-pill.saved").forEach(el => {
     el.addEventListener("click", e => {
       if (e.target.classList.contains("del")) {
         ST.pre.splice(+e.target.dataset.pi, 1); saveSt(); renderPresets(); toast("삭제됨"); return;
@@ -1333,6 +1485,38 @@ function renderPresets() {
       applyPresetData(ST.pre[+el.dataset.pi].d); toast("프리셋 적용됨");
     });
   });
+}
+
+// ════════════════════════════════════
+// TYPE CONFIG APPLY
+// ════════════════════════════════════
+function applyTypeConfig(type) {
+  const cfg = TYPE_CONFIG[type];
+  if (!cfg) return;
+
+  const onSet = new Set(cfg.togglesOn);
+  Object.keys(TECH_EN).forEach(id => {
+    const el = $(id);
+    if (!el) return;
+    el.checked = onSet.has(id);
+    el.closest(".tgl").classList.toggle("on", onSet.has(id));
+  });
+
+  const chipOnSet = new Set(cfg.chipsOn);
+  document.querySelectorAll(".chip").forEach(c => {
+    c.classList.toggle("on", chipOnSet.has(c.dataset.k));
+  });
+
+  const ph = cfg.ph;
+  if ($("subject")) $("subject").placeholder = ph.subject;
+  if ($("style"))   $("style").placeholder   = ph.style;
+  if ($("colors"))  $("colors").placeholder  = ph.colors;
+  if ($("mood"))    $("mood").placeholder    = ph.mood;
+  if ($("extra"))   $("extra").placeholder   = ph.extra;
+
+  renderPresets();
+  checkConflict();
+  updateQuality();
 }
 
 // ════════════════════════════════════
@@ -1349,16 +1533,8 @@ function checkConflict() {
 // ════════════════════════════════════
 function resetAll() {
   ["subject","style","colors","mood","extra"].forEach(id => { if($(id)) $(id).value=""; });
-  document.querySelectorAll(".chip").forEach(c => {
-    c.classList.toggle("on", c.dataset.k === "합성하기 쉽게");
-  });
-  Object.keys(TECH_EN).forEach(id => {
-    if (!$(id)) return;
-    $(id).checked = true;
-    $(id).closest(".tgl").classList.add("on");
-  });
   const r = $("r43"); if(r) { r.checked=true; updateRatioUI(); }
-  updateQuality(); checkConflict();
+  applyTypeConfig(ST.type);
   ST.out = { gpt:"", gemini:"", ko:"", vars:["","",""] };
   renderOut(); renderVar();
   toast("초기화되었습니다");
@@ -1420,6 +1596,7 @@ function init() {
     c.addEventListener("click", () => {
       ST.type = c.dataset.type;
       document.querySelectorAll(".type-card").forEach(x => x.classList.toggle("on", x === c));
+      applyTypeConfig(ST.type);
     });
   });
 
@@ -1503,7 +1680,8 @@ function init() {
     await copyText(all); toast("두 포맷 모두 복사됨");
   });
 
-  // Reset
+  // Reset (header + right-pane)
+  $("btnResetHdr").addEventListener("click", resetAll);
   $("btnReset").addEventListener("click", resetAll);
 
   // Save preset
@@ -1532,10 +1710,9 @@ function init() {
     ST.hist = []; saveSt(); renderHist(); toast("히스토리 삭제됨");
   });
 
-  updateQuality();
-  renderHist();
-  renderPresets();
   updateRatioUI();
+  renderHist();
+  applyTypeConfig(ST.type);
 }
 
 document.addEventListener("DOMContentLoaded", init);
