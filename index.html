@@ -1192,7 +1192,7 @@ function buildGPT(en, mode) {
     lines.push(sep); lines.push("REQUIREMENTS");
     tech.forEach(t => lines.push(`  ✓ ${t}`));
     if (chips.length){ lines.push(sep); lines.push(`KEYWORDS     ${chips.join(" · ")}`); }
-    if (ratio)       { lines.push(sep); lines.push(`OUTPUT       ${ratio} aspect ratio, PNG with alpha channel`); }
+    if (ratio)       { lines.push(sep); lines.push(`OUTPUT       ${ratio} aspect ratio`); }
     lines.push(sep);
     return lines.join("\n");
   }
@@ -1260,7 +1260,7 @@ function buildGemini(en, mode) {
     lines.push(sep); lines.push("CONSTRAINTS");
     tech.forEach(t => lines.push(`  ✓ ${t}`));
     if (chips.length){ lines.push(sep); lines.push(`STYLE TAGS   ${chips.join(" · ")}`); }
-    if (ratio)       { lines.push(sep); lines.push(`RATIO        ${ratio}, PNG with alpha channel`); }
+    if (ratio)       { lines.push(sep); lines.push(`RATIO        ${ratio}`); }
     lines.push(sep);
     return lines.join("\n");
   }
