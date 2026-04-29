@@ -641,6 +641,36 @@ body {
       <div class="blk-title">기술 요건</div>
       <div class="toggle-grid" id="toggleGrid">
         <label class="tgl on">
+          <input type="checkbox" id="o_public" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">공공기관 홍보물</span>
+        </label>
+        <label class="tgl on">
+          <input type="checkbox" id="o_flat" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">플랫 벡터 일러스트</span>
+        </label>
+        <label class="tgl on">
+          <input type="checkbox" id="o_infog" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">인포그래픽형 디자인</span>
+        </label>
+        <label class="tgl on">
+          <input type="checkbox" id="o_line" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">라인 아트</span>
+        </label>
+        <label class="tgl on">
+          <input type="checkbox" id="o_simple" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">단순 채색</span>
+        </label>
+        <label class="tgl on">
+          <input type="checkbox" id="o_removesky" checked>
+          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+          <span class="tgl-text">하늘/배경 삭제</span>
+        </label>
+        <label class="tgl on">
           <input type="checkbox" id="o_transp" checked>
           <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
           <span class="tgl-text">투명 배경</span>
@@ -675,21 +705,6 @@ body {
           <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
           <span class="tgl-text">오리지널 IP</span>
         </label>
-        <label class="tgl">
-          <input type="checkbox" id="o_flat">
-          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
-          <span class="tgl-text">플랫 벡터</span>
-        </label>
-        <label class="tgl">
-          <input type="checkbox" id="o_line">
-          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
-          <span class="tgl-text">라인 아트</span>
-        </label>
-        <label class="tgl">
-          <input type="checkbox" id="o_simple">
-          <div class="tgl-box"><svg class="tgl-check" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
-          <span class="tgl-text">단순 채색</span>
-        </label>
       </div>
       <div class="conflict" id="conflictWarn">
         ⚠ 플랫 벡터와 3D 스타일이 동시에 선택되어 있습니다
@@ -700,8 +715,8 @@ body {
     <div class="blk">
       <div class="blk-title">출력 비율</div>
       <div class="ratio-row">
-        <label class="ratio-opt on" id="rl11"><input type="radio" name="ratio" id="r11" checked>1:1</label>
-        <label class="ratio-opt" id="rl43"><input type="radio" name="ratio" id="r43">4:3</label>
+        <label class="ratio-opt" id="rl11"><input type="radio" name="ratio" id="r11">1:1</label>
+        <label class="ratio-opt on" id="rl43"><input type="radio" name="ratio" id="r43" checked>4:3</label>
         <label class="ratio-opt" id="rl34"><input type="radio" name="ratio" id="r34">3:4</label>
         <label class="ratio-opt" id="rl169"><input type="radio" name="ratio" id="r169">16:9</label>
         <label class="ratio-opt" id="rl916"><input type="radio" name="ratio" id="r916">9:16</label>
@@ -712,28 +727,40 @@ body {
     <div class="blk">
       <div class="blk-title">스타일 키워드</div>
       <div class="chip-wrap" id="chipWrap">
+        <div class="chip-sec-label">출력 품질</div>
+        <span class="chip on" data-k="합성하기 쉽게">합성하기 쉽게</span>
+        <span class="chip" data-k="고해상도 투명 PNG">고해상도 투명 PNG</span>
+        <span class="chip" data-k="깔끔한 실루엣">깔끔한 실루엣</span>
+        <span class="chip" data-k="외곽선 선명하게">외곽선 선명하게</span>
+        <span class="chip" data-k="가장자리 깨끗하게">가장자리 깨끗하게</span>
+        <span class="chip" data-k="작은 크기에서도 잘 보이게">작은 크기에서도 잘 보이게</span>
         <div class="chip-sec-label">구성</div>
-        <span class="chip" data-k="centered composition">중앙 배치</span>
-        <span class="chip" data-k="front-facing view">정면 구도</span>
-        <span class="chip" data-k="generous safe padding">안전 여백</span>
-        <span class="chip" data-k="full body visible">전신 표현</span>
+        <span class="chip" data-k="중앙 배치">중앙 배치</span>
+        <span class="chip" data-k="정면 구도">정면 구도</span>
+        <span class="chip" data-k="여백 넉넉하게">여백 넉넉하게</span>
+        <span class="chip" data-k="각 요소 분리">각 요소 분리</span>
+        <span class="chip" data-k="균일한 크기">균일한 크기</span>
+        <span class="chip" data-k="과도한 장식 없음">과도한 장식 없음</span>
         <div class="chip-sec-label">스타일</div>
-        <span class="chip" data-k="soft 3D rendered with depth">소프트 3D</span>
-        <span class="chip" data-k="flat 2D vector">플랫 2D</span>
-        <span class="chip" data-k="thick bold outlines">두꺼운 라인</span>
-        <span class="chip" data-k="rounded friendly shapes">둥근 형태</span>
-        <span class="chip" data-k="pastel color palette">파스텔 톤</span>
+        <span class="chip" data-k="3D형태">3D형태</span>
+        <span class="chip" data-k="입체감 있게">입체감 있게</span>
+        <span class="chip" data-k="평면 벡터 느낌">평면 벡터 느낌</span>
+        <span class="chip" data-k="두꺼운 라인">두꺼운 라인</span>
+        <span class="chip" data-k="둥근 형태">둥근 형태</span>
+        <span class="chip" data-k="색상 변경 쉬운 형태">색상 변경 쉬운 형태</span>
+        <span class="chip" data-k="벡터화하기 쉬운 단순 형태">벡터화하기 쉬운 단순 형태</span>
         <div class="chip-sec-label">분위기</div>
-        <span class="chip" data-k="cute and approachable">귀엽고 친근</span>
-        <span class="chip" data-k="premium clean minimalist">고급 미니멀</span>
-        <span class="chip" data-k="bright cheerful energetic">밝고 경쾌</span>
-        <span class="chip" data-k="commercial advertising style">광고 느낌</span>
-        <span class="chip" data-k="brand mascot character">브랜드 마스코트</span>
+        <span class="chip" data-k="귀엽고 친근하게">귀엽고 친근하게</span>
+        <span class="chip" data-k="밝고 경쾌하게">밝고 경쾌하게</span>
+        <span class="chip" data-k="고급스럽고 깔끔하게">고급스럽고 깔끔하게</span>
+        <span class="chip" data-k="상업 디자인 느낌">상업 디자인 느낌</span>
+        <span class="chip" data-k="브랜드 마스코트 느낌">브랜드 마스코트 느낌</span>
         <div class="chip-sec-label">제거 조건</div>
-        <span class="chip neg" data-k="no background elements whatsoever">배경 없음</span>
-        <span class="chip neg" data-k="no ground shadow">바닥 그림자 없음</span>
-        <span class="chip neg" data-k="no decorative elements">불필요한 장식 없음</span>
-        <span class="chip neg" data-k="no watermark no logo">워터마크·로고 없음</span>
+        <span class="chip neg" data-k="불필요한 배경 없음">불필요한 배경 없음</span>
+        <span class="chip neg" data-k="바닥 그림자 없음">바닥 그림자 없음</span>
+        <span class="chip neg" data-k="워터마크 없음">워터마크 없음</span>
+        <span class="chip neg" data-k="로고 없음">로고 없음</span>
+        <span class="chip neg" data-k="저작권 안전한 오리지널">저작권 안전한 오리지널</span>
       </div>
     </div>
 
@@ -835,16 +862,51 @@ const TYPE_EN = {
 };
 
 const TECH_EN = {
+  o_public:   "public-friendly clean institutional style, safe for all ages, government-grade imagery",
   o_transp:   "transparent background with clean alpha channel",
   o_noshadow: "no drop shadow, no cast shadow, no ground shadow",
   o_notext:   "no text, no watermark, no logo, no signature",
   o_highres:  "high resolution, print-ready quality",
   o_clean:    "crisp clean edges, sharp well-defined outlines",
-  o_safe:     "full subject visible, safe margins on all sides",
-  o_original: "original design, copyright-safe",
-  o_flat:     "flat 2D vector style, no shading or depth",
-  o_line:     "clean line art, uniform stroke weight",
-  o_simple:   "simple flat coloring, limited palette",
+  o_safe:     "full subject visible within frame, safe margins, nothing cropped",
+  o_original: "original design, copyright-safe, not based on any existing IP",
+  o_flat:     "flat vector illustration style",
+  o_infog:    "infographic-style composition",
+  o_line:     "clean line art with defined outlines",
+  o_simple:   "simple flat coloring, minimal color complexity",
+  o_removesky:"no sky, no background scenery",
+};
+
+const TECH_CHIP_EN = {
+  "합성하기 쉽게":             "easy to composite on any background",
+  "고해상도 투명 PNG":         "high resolution transparent PNG",
+  "깔끔한 실루엣":             "clean silhouette",
+  "외곽선 선명하게":           "sharp well-defined outlines",
+  "가장자리 깨끗하게":         "clean smooth edges",
+  "작은 크기에서도 잘 보이게": "clearly legible at small sizes",
+  "과도한 장식 없음":          "no excessive decoration",
+  "여백 넉넉하게":             "generous padding around subject",
+  "각 요소 분리":              "each element visually separated",
+  "중앙 배치":                 "centered composition",
+  "정면 구도":                 "front-facing view",
+  "균일한 크기":               "uniform proportions",
+  "색상 변경 쉬운 형태":       "easy to recolor",
+  "벡터화하기 쉬운 단순 형태": "simple shapes easy to vectorize",
+  "3D형태":                   "soft 3D rendered look",
+  "상업 디자인 느낌":          "commercial design aesthetic",
+  "브랜드 마스코트 느낌":      "brand mascot character style",
+  "귀엽고 친근하게":           "cute and friendly",
+  "고급스럽고 깔끔하게":       "premium and clean",
+  "밝고 경쾌하게":             "bright and cheerful",
+  "입체감 있게":               "three-dimensional depth",
+  "평면 벡터 느낌":            "flat vector style",
+  "두꺼운 라인":               "thick bold outlines",
+  "둥근 형태":                 "rounded shapes",
+  "불필요한 배경 없음":        "no background elements",
+  "바닥 그림자 없음":          "no ground shadow",
+  "워터마크 없음":             "no watermark",
+  "로고 없음":                 "no logo",
+  "저작권 안전한 오리지널":    "copyright-safe original design",
 };
 
 const RATIO_EN  = { r11:"1:1", r43:"4:3", r34:"3:4", r169:"16:9", r916:"9:16" };
@@ -865,10 +927,10 @@ const ST = {
 };
 
 const BUILTIN = [
-  { name:"귀여운 마스코트", d:{ type:"캐릭터 디자인", subject:"귀엽고 친근한 마스코트 캐릭터", style:"말랑한 소프트 3D 광고 캐릭터", colors:"파스텔 톤, 따뜻한 색감", mood:"밝고 경쾌한, 어린이 친화적", extra:"" } },
-  { name:"플랫 아이콘",    d:{ type:"아이콘 디자인",   subject:"비즈니스 관련 아이콘", style:"모던 플랫 벡터 라인 아이콘", colors:"단색, 제한된 팔레트", mood:"깔끔하고 전문적", extra:"일관된 선 굵기" } },
-  { name:"인쇄 소스",      d:{ type:"인쇄용 소스 디자인", subject:"장식용 그래픽 소스", style:"모던 일러스트레이션", colors:"브랜드 색상 기반", mood:"고급스럽고 정제된", extra:"" } },
-  { name:"귀여운 오브젝트",d:{ type:"오브젝트 디자인",  subject:"귀여운 음식 오브젝트", style:"치비 스타일 일러스트", colors:"밝고 채도 높은", mood:"귀엽고 식욕 돋는", extra:"" } },
+  { name:"딸기 체험농장 마스코트", d:{ type:"캐릭터 디자인", subject:"딸기 체험농장용 귀여운 마스코트 캐릭터", style:"말랑한 소프트 3D 광고 캐릭터", colors:"딸기 레드, 잎사귀 그린, 크림톤", mood:"밝고 경쾌한, 어린이 친화적", extra:"손을 흔드는 친근한 포즈" } },
+  { name:"고깃집 이벤트 아이콘",  d:{ type:"아이콘 디자인",   subject:"고깃집 메뉴 및 이벤트 홍보 아이콘", style:"플랫 벡터 라인 아이콘", colors:"불꽃 오렌지, 브라운, 레드", mood:"식욕 돋고 활기찬", extra:"일관된 선 굵기, 세트 구성" } },
+  { name:"어린이날 오브젝트",     d:{ type:"오브젝트 디자인",  subject:"어린이날 행사용 장식 오브젝트", style:"플랫 벡터 일러스트", colors:"노랑, 민트, 핑크, 하늘색", mood:"밝고 귀엽고 어린이 친화적", extra:"풍선, 선물상자, 리본 포함" } },
+  { name:"행사 홍보 소스",        d:{ type:"인쇄용 소스 디자인", subject:"지역 축제 및 공공행사 홍보 그래픽 소스", style:"인포그래픽형 플랫 벡터 일러스트", colors:"관공서 톤, 파랑 계열, 밝은 원색", mood:"공식적이고 친근한, 가족 친화적", extra:"" } },
 ];
 
 // ════════════════════════════════════
@@ -919,7 +981,7 @@ function getCheckedTech() {
   return Object.entries(TECH_EN).filter(([id]) => $(id) && $(id).checked).map(([,en]) => en);
 }
 function getChips() {
-  return [...document.querySelectorAll(".chip.on")].map(c => c.dataset.k);
+  return [...document.querySelectorAll(".chip.on")].map(c => TECH_CHIP_EN[c.dataset.k] || c.dataset.k);
 }
 function getRatioId() {
   const r = document.querySelector('input[name="ratio"]:checked');
@@ -945,6 +1007,12 @@ function buildGPT(en, mode) {
     if (en.extra) parts.push(en.extra);
 
     const techKey = [];
+    if ($("o_public")?.checked) techKey.push("public-friendly institutional style");
+    if ($("o_flat")?.checked) techKey.push("flat vector style");
+    if ($("o_infog")?.checked) techKey.push("infographic-style composition");
+    if ($("o_line")?.checked) techKey.push("line art style");
+    if ($("o_simple")?.checked) techKey.push("simple flat coloring");
+    if ($("o_removesky")?.checked) techKey.push("no sky, no background scenery");
     if ($("o_transp")?.checked) techKey.push("transparent background");
     if ($("o_noshadow")?.checked) techKey.push("no shadows");
     if ($("o_notext")?.checked) techKey.push("no text or watermarks");
@@ -952,8 +1020,6 @@ function buildGPT(en, mode) {
     if ($("o_safe")?.checked) techKey.push("full subject in frame");
     if ($("o_highres")?.checked) techKey.push("high resolution");
     if ($("o_original")?.checked) techKey.push("original design");
-    if ($("o_flat")?.checked) techKey.push("flat vector style");
-    if ($("o_line")?.checked) techKey.push("line art style");
 
     let out = `Create a ${type}: ${parts.join(", ")}.`;
     if (techKey.length) out += ` ${techKey.join(", ")}.`;
@@ -1252,14 +1318,15 @@ function checkConflict() {
 // ════════════════════════════════════
 function resetAll() {
   ["subject","style","colors","mood","extra"].forEach(id => { if($(id)) $(id).value=""; });
-  document.querySelectorAll(".chip.on").forEach(c => c.classList.remove("on"));
+  document.querySelectorAll(".chip").forEach(c => {
+    c.classList.toggle("on", c.dataset.k === "합성하기 쉽게");
+  });
   Object.keys(TECH_EN).forEach(id => {
     if (!$(id)) return;
-    const def = ["o_transp","o_noshadow","o_notext","o_highres","o_clean","o_safe","o_original"].includes(id);
-    $(id).checked = def;
-    $(id).closest(".tgl").classList.toggle("on", def);
+    $(id).checked = true;
+    $(id).closest(".tgl").classList.add("on");
   });
-  const r = $("r11"); if(r) { r.checked=true; updateRatioUI(); }
+  const r = $("r43"); if(r) { r.checked=true; updateRatioUI(); }
   updateQuality(); checkConflict();
   ST.out = { gpt:"", mj:"", sd:"", debug:"", vars:["","",""] };
   renderOut(); renderVar();
