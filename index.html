@@ -1152,15 +1152,19 @@ async function tr(text) {
   if (!text || !text.trim()) return "";
   const k = text.trim();
   if (ST.cache[k]) return ST.cache[k];
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 2500);
   try {
     const url = "https://translate.googleapis.com/translate_a/single"
       + "?client=gtx&sl=ko&tl=en&dt=t&q=" + encodeURIComponent(k);
-    const r = await fetch(url);
+    const r = await fetch(url, { signal: controller.signal });
+    if (!r.ok) return k;
     const d = await r.json();
     const result = d[0].map(x => x[0]).join("").trim();
     ST.cache[k] = result;
     return result;
   } catch(e) { return k; }
+  finally { clearTimeout(timer); }
 }
 
 // ════════════════════════════════════
