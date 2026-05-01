@@ -41,27 +41,46 @@ export async function handler(event) {
 
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   const options = parsed.data.brief.apiOptions
+  const model = process.env.OPENAI_IMAGE_MODEL || options.model
+  const supportsTransparentBackground = !model.startsWith('gpt-image-2')
 
-  const image = await client.images.generate({
-    model: process.env.OPENAI_IMAGE_MODEL || options.model,
-    prompt: parsed.data.brief.prompt,
-    size: process.env.OPENAI_IMAGE_SIZE || options.size,
-    quality: process.env.OPENAI_IMAGE_QUALITY || options.quality,
-    background: options.background,
-    output_format: options.output_format,
-  })
+  try {
+    const request = {
+      model,
+      prompt: parsed.data.brief.prompt,
+      size: process.env.OPENAI_IMAGE_SIZE || options.size,
+      quality: process.env.OPENAI_IMAGE_QUALITY || options.quality,
+      output_format: options.output_format,
+    }
 
-  const b64 = image.data?.[0]?.b64_json
-  if (!b64) {
-    return json(502, { error: 'Image API returned no image data' })
+    if (supportsTransparentBackground) {
+      request.background = options.background
+    }
+
+    const image = await client.images.generate(request)
+
+    const b64 = image.data?.[0]?.b64_json
+    if (!b64) {
+      return json(502, { error: 'Image API returned no image data' })
+    }
+
+    return json(200, {
+      mode: 'generate',
+      imageDataUrl: `data:image/png;base64,${b64}`,
+      message: supportsTransparentBackground
+        ? '투명 PNG 생성 완료'
+        : 'gpt-image-2 생성 완료. 이 모델은 transparent background API 옵션을 지원하지 않아 프롬프트 조건으로만 배경 제거를 요청했습니다.',
+      brief: parsed.data.brief,
+      model,
+      backgroundApplied: supportsTransparentBackground,
+    })
+  } catch (error) {
+    return json(502, {
+      error: 'OpenAI image generation failed',
+      message: error instanceof Error ? error.message : 'Unknown image generation error',
+      model,
+    })
   }
-
-  return json(200, {
-    mode: 'generate',
-    imageDataUrl: `data:image/png;base64,${b64}`,
-    message: '투명 PNG 생성 완료',
-    brief: parsed.data.brief,
-  })
 }
 
 function json(statusCode, body) {

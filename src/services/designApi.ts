@@ -9,14 +9,19 @@ export async function generateDesign(brief: DesignBrief): Promise<GenerationResu
     })
 
     if (!response.ok) {
-      throw new Error(await response.text())
+      const errorText = await response.text()
+      return {
+        mode: 'draft',
+        message: `이미지 생성 실패: ${errorText}`,
+        brief,
+      }
     }
 
     return (await response.json()) as GenerationResult
-  } catch {
+  } catch (error) {
     return {
       mode: 'draft',
-      message: '이미지 API는 아직 연결되지 않았습니다. 현재는 생성 요청과 피드백 구조를 검증합니다.',
+      message: `이미지 API 호출 실패: ${error instanceof Error ? error.message : '알 수 없는 오류'}`,
       brief,
     }
   }
